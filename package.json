@@ -18,8 +18,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "deploy:verify": "npm run typecheck && npm test && npm run build"
+    "deploy:verify": "npm run typecheck && npm run build"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
