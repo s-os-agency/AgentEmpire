@@ -66,6 +66,8 @@ Agents are defined in `lib/agents/definitions.ts` with:
 
 Tool routing: `lib/tools/router.ts` + `lib/tools/providers.ts`.
 
+Incident response: [outages, service faults, communication and recovery evidence](docs/INCIDENT_RESPONSE_PLAYBOOKS.md).
+
 Architecture: [ARCHITECTURE.md](ARCHITECTURE.md) · Runtime: [docs/RUNTIME.md](docs/RUNTIME.md) · S-OS wiring: [docs/INTEGRATION-S-OS.md](docs/INTEGRATION-S-OS.md)
 
 ---
