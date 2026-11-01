@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DoneAi — AI Employees That Get Work Done</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<template id="__bundler_thumbnail" data-bg-color="#16a34a">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#16a34a"/>
+    <g transform="translate(600 400)" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round">
+      <circle r="150" fill="#fff"/>
+      <polyline points="-60,10 -15,55 70,-40" stroke="#16a34a" stroke-width="28" stroke-linejoin="round"/>
+      <g stroke="#fff" stroke-width="10" opacity="0.9">
+        <line x1="0" y1="-200" x2="0" y2="-240"/>
+        <line x1="0" y1="200" x2="0" y2="240"/>
+        <line x1="-200" y1="0" x2="-240" y2="0"/>
+        <line x1="200" y1="0" x2="240" y2="0"/>
+        <line x1="-141" y1="-141" x2="-170" y2="-170"/>
+        <line x1="141" y1="-141" x2="170" y2="-170"/>
+        <line x1="-141" y1="141" x2="-170" y2="170"/>
+        <line x1="141" y1="141" x2="170" y2="170"/>
+      </g>
+    </g>
+  </svg>
+</template>
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#0b1220;
+    --ink-2:#1a2436;
+    --muted:#5b6677;
+    --line:#e6ebf0;
+    --line-2:#eef2f6;
+    --green:#16a34a;
+    --green-2:#15803d;
+    --green-3:#0f6b32;
+    --green-tint:#e7f6ec;
+    --green-tint-2:#f1faf3;
+    --green-soft:#dff3e3;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 1px 1px rgba(15,23,42,.03);
+    --shadow-md: 0 12px 32px -16px rgba(15,23,42,.18), 0 2px 6px rgba(15,23,42,.04);
+    --shadow-lg: 0 30px 60px -28px rgba(15,23,42,.22), 0 6px 16px rgba(15,23,42,.05);
+    --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:20px; --r-2xl:24px; --r-pill:999px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    font-size:16px;
+    line-height:1.5;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  img{max-width:100%;display:block}
+  .container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+  /* ───────────── NAV ───────────── */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom:1px solid transparent;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .nav.is-scrolled{border-color:var(--line); box-shadow:var(--shadow-sm)}
+  .nav-inner{display:flex;align-items:center;gap:32px;height:78px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:24px;letter-spacing:-0.02em}
+  .brand-mark{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;position:relative}
+  .brand-mark svg{width:100%;height:100%;overflow:visible}
+  .brand-name{color:var(--ink)}
+  .brand-name .ai{color:var(--ink)}
+  .brand-name .dot{color:var(--green)}
+
+  .nav-links{display:flex;align-items:center;gap:30px;margin-left:24px}
+  .nav-links a, .nav-links button{
+    font-weight:500;font-size:15px;color:var(--ink-2);
+    display:inline-flex;align-items:center;gap:4px;
+    transition: color .15s ease;
+  }
+  .nav-links a:hover, .nav-links button:hover{color:var(--green)}
+  .nav-links .has-menu{position:relative}
+  .nav-links .caret{transition:transform .2s ease}
+  .nav-links .has-menu.is-open .caret{transform:rotate(180deg)}
+  .menu{
+    position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(-6px);
+    background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);
+    box-shadow:var(--shadow-lg);
+    padding:10px;width:280px;
+    opacity:0;pointer-events:none;transition:all .18s ease;
+  }
+  .has-menu.is-open .menu{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+  .menu a{display:block;padding:10px 12px;border-radius:8px;font-size:14px;color:var(--ink-2)}
+  .menu a:hover{background:var(--green-tint-2);color:var(--green-3)}
+  .menu .menu-title{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);padding:8px 12px 4px}
+
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:18px}
+  .login{font-weight:600;font-size:15px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 22px;border-radius:var(--r-pill);font-weight:700;font-size:15px;
+    transition: transform .12s ease, background .15s ease, box-shadow .15s ease, color .15s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{background:var(--green);color:#fff;box-shadow:0 8px 20px -8px rgba(22,163,74,.55)}
+  .btn-primary:hover{background:var(--green-2)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ink);background:#fff}
+  .btn .arr{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:rgba(255,255,255,.18)}
+  .btn-ghost .arr{background:var(--green);color:#fff}
+  .btn-lg{padding:16px 26px;font-size:16px}
+
+  /* mobile toggle */
+  .nav-toggle{display:none}
+  @media (max-width: 980px){
+    .nav-links{display:none}
+    .nav-right .login{display:none}
+    .nav-toggle{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;border:1px solid var(--line)}
+    .nav.is-mobile-open .nav-mobile{display:block}
+  }
+  .nav-mobile{display:none;border-top:1px solid var(--line);padding:14px 0 20px}
+  .nav-mobile a{display:block;padding:12px 4px;font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--line-2)}
+
+  /* ───────────── HERO ───────────── */
+  .hero{position:relative;overflow:hidden;padding:40px 0 64px}
+  .hero::after{
+    content:"";position:absolute;right:-160px;top:120px;width:520px;height:520px;
+    background: radial-gradient(closest-side, rgba(34,197,94,.18), transparent 70%);
+    filter: blur(20px); pointer-events:none; z-index:0;
+  }
+  .hero-grid{display:grid;grid-template-columns: 1fr 1.05fr; gap:48px; align-items:center; position:relative; z-index:1}
+  @media (max-width: 980px){ .hero-grid{grid-template-columns:1fr; gap:36px} }
+  @media (max-width: 600px){ .hero{padding:28px 0 44px} .lede{font-size:16px} .chips{gap:12px 16px} .chip{font-size:14px} .cta-row .btn-lg{width:100%;justify-content:center} }
+
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 14px;border-radius:var(--r-pill);
+    background:var(--green-tint-2);border:1px solid var(--green-soft);
+    color:var(--green-3);font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:999px;background:var(--green);box-shadow:0 0 0 4px rgba(22,163,74,.18)}
+
+  .h1{
+    font-weight:800;font-size: clamp(48px, 6.4vw, 84px);
+    line-height:1.02;letter-spacing:-0.035em;margin:22px 0 22px;
+    text-wrap:balance;
+  }
+  .h1 .green{color:var(--green); display:block}
+  .lede{font-size:18px;line-height:1.6;color:var(--muted);max-width:520px;margin:0 0 22px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:18px 22px;margin-bottom:30px}
+  .chip{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--ink-2);font-size:15px}
+  .chip .ic{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:var(--green);color:#fff}
+  .chip .ic svg{width:12px;height:12px}
+
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:18px}
+  .trust-line{display:inline-flex;align-items:center;gap:10px;color:var(--muted);font-size:14px}
+  .trust-line .ic{color:var(--green);width:18px;height:18px;flex:0 0 18px}
+
+  /* ───────────── HERO DASHBOARD MOCK ───────────── */
+  .dash{
+    background:#fff;border:1px solid var(--line);border-radius:var(--r-xl);
+    box-shadow:var(--shadow-lg);
+    padding:18px; display:grid; grid-template-columns: 168px 1fr; gap:18px; position:relative;
+  }
+  @media (max-width: 600px){ .dash{ grid-template-columns:1fr; padding:14px } .dash-side{ display:none } }
+  .dash-side{background:#fafbfc;border:1px solid var(--line-2);border-radius:14px;padding:14px 10px}
+  .dash-side .brand-row{display:flex;align-items:center;gap:8px;padding:4px 6px 14px}
+  .dash-side .brand-row .brand-mark{width:22px;height:22px}
+  .dash-side .brand-row .name{font-weight:800;font-size:14px;letter-spacing:-0.02em}
+  .side-item{
+    display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;
+    font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .side-item:hover{background:#fff}
+  .side-item.is-active{background:var(--green);color:#fff;box-shadow:0 6px 14px -8px rgba(22,163,74,.6)}
+  .side-item svg{width:14px;height:14px}
+
+  .dash-main{display:flex;flex-direction:column;gap:14px;min-width:0}
+  .dash-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .dash-head .title{font-size:18px;font-weight:700;letter-spacing:-0.01em}
+  .pill-select{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 12px;border:1px solid var(--line);border-radius:var(--r-pill);
+    font-size:12px;font-weight:600;color:var(--ink-2);background:#fff;
+  }
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .kpi{border:1px solid var(--line-2);border-radius:12px;padding:12px}
+  .kpi .label{font-size:11px;color:var(--muted);font-weight:600}
+  .kpi .value{font-size:22px;font-weight:800;letter-spacing:-0.02em;margin-top:6px}
+  .kpi .delta{font-size:11px;color:var(--green);font-weight:700;margin-top:4px;display:inline-flex;align-items:center;gap:4px}
+
+  .panels{display:grid;grid-template-columns: 1.05fr 1fr;gap:10px}
+  @media (max-width: 1200px){ .panels{grid-template-columns:1fr} }
+  .panel{border:1px solid var(--line-2);border-radius:12px;padding:12px}
+  .panel-title{font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:10px}
+  .emp{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line-2)}
+  .emp:last-child{border-bottom:0}
+  .emp .av{width:30px;height:30px;border-radius:8px;background:var(--green-tint);display:flex;align-items:center;justify-content:center;color:var(--green-3);flex:0 0 30px}
+  .emp .meta{flex:1;min-width:0}
+  .emp .name{font-size:12px;font-weight:700}
+  .emp .role{font-size:11px;color:var(--muted)}
+  .emp .status{font-size:10px;font-weight:700;color:var(--green);padding:3px 8px;border-radius:999px;background:var(--green-tint)}
+
+  .chart-wrap{position:relative}
+  .chart-head{display:flex;align-items:center;justify-content:space-between}
+  .chart-badge{font-size:10px;font-weight:800;color:var(--green);background:var(--green-tint);padding:3px 8px;border-radius:999px}
+  .chart-svg{width:100%;height:110px;margin-top:6px}
+  .chart-x{display:flex;justify-content:space-between;color:var(--muted);font-size:9px;margin-top:4px;font-weight:600}
+
+  /* ───────────── TRUST STRIP ───────────── */
+  .trust{
+    margin-top:8px; padding:24px 28px;
+    border:1px solid var(--line);border-radius:var(--r-lg);background:#fff;box-shadow:var(--shadow-sm);
+    display:flex;align-items:center;gap:36px;flex-wrap:wrap;justify-content:space-between;
+  }
+  .trust-eyebrow{font-size:11px;letter-spacing:0.16em;font-weight:700;color:var(--muted);text-transform:uppercase}
+  .trust-logos{display:flex;align-items:center;gap:42px;flex-wrap:wrap;color:#1f2937;opacity:.85}
+  .trust-logos .logo{font-weight:800;letter-spacing:-0.02em}
+  .review{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+  .review .top{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);font-weight:600}
+  .review .stars{display:inline-flex;gap:2px;color:#f5b301}
+  .g-logo{
+    width:22px;height:22px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:13px;
+    background: conic-gradient(from 0deg, #ea4335, #fbbc05, #34a853, #4285f4, #ea4335);
+    color:#fff; box-shadow: inset 0 0 0 2px #fff;
+  }
+
+  /* ───────────── SECTION HEADERS ───────────── */
+  section{padding:96px 0}
+  .section-eyebrow{display:block;text-align:center;color:var(--green);font-weight:800;font-size:13px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px}
+  .section-title{text-align:center;font-size: clamp(32px, 4vw, 48px);font-weight:800;letter-spacing:-0.025em;line-height:1.1;text-wrap:balance;margin:0 auto;max-width:880px}
+  .section-title .green{color:var(--green)}
+  .section-sub{text-align:center;color:var(--muted);font-size:18px;max-width:640px;margin:18px auto 0}
+
+  /* ───────────── FEATURES ───────────── */
+  .features{padding-top:80px}
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:54px}
+  @media (max-width: 980px){.feat-grid{grid-template-columns:1fr 1fr}}
+  @media (max-width: 640px){.feat-grid{grid-template-columns:1fr}}
+  .feat{
+    border:1px solid var(--line);border-radius:var(--r-lg);padding:26px 28px;
+    background:#fff; display:flex;gap:18px;align-items:flex-start;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .feat:hover{transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--green-soft)}
+  .feat-ic{
+    width:56px;height:56px;flex:0 0 56px;border-radius:999px;
+    background:var(--green-tint);color:var(--green-3);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .feat-ic svg{width:24px;height:24px}
+  .feat h3{font-size:17px;font-weight:800;margin:2px 0 8px;letter-spacing:-0.01em}
+  .feat p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.55}
+
+  /* ───────────── HOW IT WORKS ───────────── */
+  .how{
+    background: linear-gradient(180deg, var(--green-tint-2) 0%, #f6fcf7 100%);
+    border-radius:var(--r-2xl);
+    padding:64px 40px 72px;margin:48px 0;
+    position:relative;overflow:hidden;
+  }
+  .how::before{
+    content:"";position:absolute;inset:0;
+    background-image: radial-gradient(circle, rgba(22,163,74,.10) 1.2px, transparent 1.2px);
+    background-size:22px 22px; opacity:.55; mask: radial-gradient(ellipse 70% 60% at 50% 50%, #000, transparent 80%);
+    pointer-events:none;
+  }
+  .how > *{position:relative}
+  .steps{display:grid;grid-template-columns: 1fr auto 1fr auto 1fr;gap:18px;align-items:stretch;margin-top:46px}
+  @media (max-width: 980px){.steps{grid-template-columns:1fr;gap:18px} .step-arrow{display:none}}
+  .step{
+    background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:26px 22px; text-align:center;
+    box-shadow:var(--shadow-sm);
+  }
+  .step .num{
+    width:48px;height:48px;border-radius:999px;background:var(--green);color:#fff;
+    font-weight:800;font-size:20px;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+    box-shadow:0 10px 22px -8px rgba(22,163,74,.6);
+  }
+  .step h4{margin:0 0 8px;font-size:17px;font-weight:800;letter-spacing:-0.01em}
+  .step p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
+  .step-arrow{display:flex;align-items:center;justify-content:center;color:var(--green);font-size:24px}
+
+  /* ───────────── RESULTS + PRICING ───────────── */
+  .results{display:grid;grid-template-columns:1fr 1.05fr;gap:36px;align-items:start}
+  @media (max-width: 980px){.results{grid-template-columns:1fr}}
+  .results-eyebrow{color:var(--green);font-weight:800;font-size:12px;letter-spacing:0.18em;text-transform:uppercase}
+  .results h2{font-size: clamp(28px, 3.4vw, 40px);font-weight:800;letter-spacing:-0.025em;line-height:1.1;margin:12px 0 28px}
+  .results h2 .green{color:var(--green)}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px}
+  @media (max-width: 640px){.stat-grid{grid-template-columns:1fr 1fr}}
+  .stat .val{font-size:34px;font-weight:800;color:var(--green);letter-spacing:-0.03em;line-height:1}
+  .stat .lbl{margin-top:8px;font-size:13px;color:var(--muted)}
+
+  .testimonial{
+    border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;background:#fff;
+    display:grid;grid-template-columns:60px 1fr;gap:16px;align-items:center;
+  }
+  .testimonial .avatar{
+    width:60px;height:60px;border-radius:999px;overflow:hidden;background:#d9e0e8;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .testimonial .avatar svg{width:100%;height:100%}
+  .testimonial .q{font-size:14.5px;line-height:1.55;margin:0 0 8px}
+  .testimonial .meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);gap:10px;flex-wrap:wrap}
+  .testimonial .meta .stars{color:#f5b301;letter-spacing:1px}
+
+  .pricing-card{
+    border:1px solid var(--line);border-radius:var(--r-xl);
+    padding:32px;background:#fff;box-shadow:var(--shadow-md);
+    position:relative;overflow:hidden;
+  }
+  .pricing-card::after{
+    content:"";position:absolute;right:-40px;top:-40px;width:260px;height:260px;
+    background: radial-gradient(closest-side, rgba(22,163,74,.10), transparent 70%);
+    pointer-events:none;
+  }
+  .pricing-card h3{margin:0 0 8px;font-size:24px;font-weight:800;letter-spacing:-0.02em}
+  .pricing-card .sub{color:var(--muted);font-size:14.5px;margin-bottom:24px}
+  .price-row{display:flex;align-items:center;gap:24px;margin-bottom:24px;flex-wrap:wrap}
+  .price{font-size:54px;font-weight:800;letter-spacing:-0.035em;line-height:1}
+  .price-list{display:grid;gap:8px}
+  .price-list li{list-style:none;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--ink-2)}
+  .price-list li .ic{width:18px;height:18px;border-radius:999px;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:0 0 18px}
+  .price-list li .ic svg{width:11px;height:11px}
+  .pricing-card .fine{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
+  .pricing-card .btn-primary{width:100%;justify-content:center;padding:16px;font-size:16px}
+  .checkmark-deco{position:absolute;right:24px;top:24px;width:120px;height:120px;opacity:.85;pointer-events:none}
+
+  /* ───────────── BADGES ROW ───────────── */
+  .badges{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+    border:1px solid var(--line);border-radius:var(--r-xl);background:var(--green-tint-2);
+    padding:22px 24px;margin-top:40px;position:relative;overflow:hidden;
+  }
+  @media (max-width: 980px){.badges{grid-template-columns:1fr 1fr}}
+  @media (max-width: 540px){.badges{grid-template-columns:1fr}}
+  .badge{display:flex;gap:14px;align-items:flex-start;padding:6px 8px}
+  .badge .ic{width:44px;height:44px;border-radius:999px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--green-3);flex:0 0 44px}
+  .badge .ic svg{width:22px;height:22px}
+  .badge h5{margin:0 0 4px;font-size:14px;font-weight:800}
+  .badge p{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
+  .badges::after{content:"";position:absolute;right:-20px;bottom:-20px;width:200px;height:120px;background-image: radial-gradient(circle, rgba(22,163,74,.20) 1px, transparent 1px);background-size:10px 10px;opacity:.6;pointer-events:none}
+
+  /* ───────────── FINAL CTA ───────────── */
+  .final-cta{background:var(--green);color:#fff;border-radius:var(--r-2xl);padding:42px 48px;margin-top:48px;display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;position:relative;overflow:hidden}
+  .final-cta .left{display:flex;align-items:center;gap:22px}
+  .final-cta .icon{width:78px;height:78px;display:flex;align-items:center;justify-content:center;flex:0 0 78px}
+  .final-cta h2{margin:0;font-size: clamp(28px, 3.2vw, 40px);font-weight:800;letter-spacing:-0.02em;line-height:1.1}
+  .final-cta p{margin:6px 0 0;color:rgba(255,255,255,.85);font-size:15px}
+  .final-cta .btn-primary{background:#fff;color:var(--green-3);box-shadow:0 10px 20px -10px rgba(0,0,0,.3)}
+  .final-cta .btn-primary:hover{background:#f1faf3}
+  .final-cta .btn-primary .arr{background:var(--green);color:#fff}
+
+  /* ───────────── FOOTER ───────────── */
+  footer{padding:60px 0 40px;color:var(--muted)}
+  .foot{display:grid;grid-template-columns:1.4fr repeat(4, 1fr);gap:28px}
+  @media (max-width: 980px){.foot{grid-template-columns:1fr 1fr}}
+  .foot h6{font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-2);margin:0 0 14px;font-weight:800}
+  .foot a{display:block;font-size:14px;padding:5px 0;color:var(--muted)}
+  .foot a:hover{color:var(--green)}
+  .foot .blurb{font-size:14px;color:var(--muted);margin:14px 0 0;line-height:1.55;max-width:280px}
+  .foot-bottom{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);flex-wrap:wrap}
+  .foot-bottom .socials{display:flex;gap:12px}
+  .foot-bottom .socials a{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2)}
+  .foot-bottom .socials a:hover{border-color:var(--green);color:var(--green)}
+
+  /* logo radiating animation */
+  @keyframes pulse-line{
+    0%,100% { opacity:.85; transform: scale(1) }
+    50% { opacity:.35; transform: scale(1.05) }
+  }
+  .brand-mark .radiate line{ transform-origin: 19px 19px; animation: pulse-line 2.4s ease-in-out infinite }
+  .brand-mark .radiate line:nth-child(2n){animation-delay:.18s}
+  .brand-mark .radiate line:nth-child(3n){animation-delay:.32s}
+
+  /* ───────────── REVEAL ANIMATION ───────────── */
+  .reveal{opacity:0;transform:translateY(20px);transition: opacity .7s ease, transform .7s cubic-bezier(.16,.84,.44,1)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+
+  /* big checkmark watermark on pricing */
+  .price-check{width:130px;height:130px;color:var(--green);opacity:.55}
+
+  /* tweak panel toggle bar (kept simple) */
+</style>
+</head>
+<body>
+
+<!-- ───────────── NAV ───────────── -->
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#top" class="brand" aria-label="DoneAi">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 38 38">
+          <g class="radiate" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round">
+            <line x1="19" y1="0" x2="19" y2="4"/>
+            <line x1="19" y1="34" x2="19" y2="38"/>
+            <line x1="0" y1="19" x2="4" y2="19"/>
+            <line x1="34" y1="19" x2="38" y2="19"/>
+            <line x1="5" y1="5" x2="8" y2="8"/>
+            <line x1="30" y1="5" x2="33" y2="8"/>
+            <line x1="5" y1="33" x2="8" y2="30"/>
+            <line x1="30" y1="33" x2="33" y2="30"/>
+            <line x1="19" y1="2" x2="19" y2="6" opacity=".4"/>
+            <line x1="2" y1="13" x2="6" y2="13.5" opacity=".5"/>
+            <line x1="32" y1="13" x2="36" y2="13.5" opacity=".5"/>
+            <line x1="2" y1="25" x2="6" y2="24.5" opacity=".5"/>
+            <line x1="32" y1="25" x2="36" y2="24.5" opacity=".5"/>
+          </g>
+          <circle cx="19" cy="19" r="13" fill="#16a34a"/>
+          <path d="M12 19.5 L17 24 L26 14.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-name">Done<span class="ai">A</span><span class="dot">i</span></span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#employees">AI Employees</a>
+      <div class="has-menu" id="menuSolutions">
+        <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="menu">
+          Solutions
+          <svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="menu" role="menu">
+          <div class="menu-title">By Role</div>
+          <a href="#" role="menuitem">Sales &amp; Lead Gen</a>
+          <a href="#" role="menuitem">Marketing &amp; Content</a>
+          <a href="#" role="menuitem">Customer Support</a>
+          <a href="#" role="menuitem">Operations</a>
+          <div class="menu-title">By Industry</div>
+          <a href="#" role="menuitem">Agencies</a>
+          <a href="#" role="menuitem">Ecommerce</a>
+          <a href="#" role="menuitem">SaaS &amp; Tech</a>
+        </div>
+      </div>
+      <a href="#how">How It Works</a>
+      <a href="#results">Results</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#about">About</a>
+    </nav>
+
+    <div class="nav-right">
+      <a class="login" href="dashboard.html">Log in</a>
+      <a class="btn btn-primary" href="dashboard.html">Open Dashboard
+        <span class="arr"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      </a>
+      <button class="nav-toggle" aria-label="Open menu" id="navToggle">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="container nav-mobile" id="navMobile">
+    <a href="#employees">AI Employees</a>
+    <a href="#how">How It Works</a>
+    <a href="#results">Results</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#about">About</a>
+    <a href="dashboard.html">Log in</a>
+  </div>
+</header>
+
+<!-- ───────────── HERO ───────────── -->
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="dot"></span>AI EMPLOYEES THAT GET WORK DONE</span>
+      <h1 class="h1">More done.<span class="green">Less effort.</span></h1>
+      <p class="lede">DoneAi gives you AI employees that handle the busywork so your team can focus on what actually grows the business.</p>
+      <div class="chips">
+        <span class="chip"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Cut Costs</span>
+        <span class="chip"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Save Time</span>
+        <span class="chip"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Scale Fast</span>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary btn-lg" href="#pricing">Start Your Pilot — Only $1,000</a>
+        <a class="btn btn-ghost btn-lg" href="#how">See It In Action <span class="arr"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4" fill="currentColor"></polygon></svg></span></a>
+      </div>
+      <div class="trust-line">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        14-Day Pilot. Real Results. No Long-Term Contracts.
+      </div>
+    </div>
+
+    <!-- DASHBOARD MOCK -->
+    <div class="dash" aria-hidden="true">
+      <aside class="dash-side">
+        <div class="brand-row">
+          <span class="brand-mark">
+            <svg viewBox="0 0 38 38"><circle cx="19" cy="19" r="13" fill="#16a34a"/><path d="M12 19.5 L17 24 L26 14.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="name">Done<span style="color:#16a34a">Ai</span></span>
+        </div>
+        <div class="side-item is-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> Overview</div>
+        <div class="side-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> AI Employees</div>
+        <div class="side-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Tasks</div>
+        <div class="side-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Reports</div>
+        <div class="side-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg> Integrations</div>
+        <div class="side-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</div>
+      </aside>
+
+      <div class="dash-main">
+        <div class="dash-head">
+          <span class="title">Overview</span>
+          <span class="pill-select">This Month
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </div>
+        <div class="kpis">
+          <div class="kpi">
+            <div class="label">Tasks Completed</div>
+            <div class="value" data-counter="2847">0</div>
+            <div class="delta"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>58% vs last month</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Time Saved</div>
+            <div class="value"><span data-counter="126">0</span>h</div>
+            <div class="delta"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>61% vs last month</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Cost Saved</div>
+            <div class="value">$<span data-counter="18650">0</span></div>
+            <div class="delta"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>72% vs last month</div>
+          </div>
+        </div>
+        <div class="panels">
+          <div class="panel">
+            <div class="panel-title">AI Employees at Work</div>
+            <div class="emp">
+              <div class="av"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg></div>
+              <div class="meta"><div class="name">Lead Qualifier</div><div class="role">Finding &amp; qualifying leads</div></div>
+              <div class="status">Active</div>
+            </div>
+            <div class="emp">
+              <div class="av"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></div>
+              <div class="meta"><div class="name">Content Creator</div><div class="role">Writing posts &amp; content</div></div>
+              <div class="status">Active</div>
+            </div>
+            <div class="emp">
+              <div class="av"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+              <div class="meta"><div class="name">Inbox Manager</div><div class="role">Handling emails</div></div>
+              <div class="status">Active</div>
+            </div>
+            <div class="emp">
+              <div class="av"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6"/></svg></div>
+              <div class="meta"><div class="name">Data Processor</div><div class="role">Processing &amp; organizing data</div></div>
+              <div class="status">Active</div>
+            </div>
+          </div>
+          <div class="panel chart-wrap">
+            <div class="chart-head">
+              <div class="panel-title">Tasks Completed</div>
+              <span class="chart-badge">+58%</span>
+            </div>
+            <svg class="chart-svg" viewBox="0 0 320 110" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#16a34a" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#16a34a" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path id="chartArea" d="M0,80 L40,72 L80,82 L120,55 L160,68 L200,40 L240,52 L280,22 L320,12 L320,110 L0,110 Z" fill="url(#g1)"/>
+              <path id="chartLine" d="M0,80 L40,72 L80,82 L120,55 L160,68 L200,40 L240,52 L280,22 L320,12" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+              <circle cx="320" cy="12" r="3.5" fill="#16a34a"/>
+              <circle cx="320" cy="12" r="6" fill="none" stroke="#16a34a" stroke-opacity=".3" stroke-width="2"/>
+            </svg>
+            <div class="chart-x"><span>May 1</span><span>May 8</span><span>May 15</span><span>May 22</span><span>May 29</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST STRIP -->
+  <div class="container" style="margin-top:56px">
+    <div class="trust">
+      <span class="trust-eyebrow">Trusted by Growing Businesses</span>
+      <div class="trust-logos">
+        <span class="logo" style="font-family:Georgia, serif;font-size:22px;font-style:italic">Forbes</span>
+        <span class="logo" style="color:#5f1995;font-size:22px;font-weight:900">yahoo<span style="color:#5f1995">!</span></span>
+        <span class="logo" style="font-family:Georgia, serif;font-size:22px;font-weight:900">Inc.</span>
+        <span class="logo" style="font-size:22px;font-weight:900;color:#f57722">Hub<span style="color:#33475b">Spot</span></span>
+      </div>
+      <div class="review">
+        <div class="top"><span class="g-logo">G</span>4.9/5 from 200+ reviews</div>
+        <div class="stars" aria-label="5 stars">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── FEATURES ───────────── -->
+<section class="features reveal" id="employees">
+  <div class="container">
+    <span class="section-eyebrow">AI Employees. Real Impact.</span>
+    <h2 class="section-title">Your team gets more done.<br>Your business <span class="green">grows faster.</span></h2>
+
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor" fill-opacity=".15"/></svg></div>
+        <div>
+          <h3>AI Employees That Work 24/7</h3>
+          <p>Always on. Always working. No breaks. No sick days.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.7-.9-1.7-1.5-2.5-1.5-1.7 0-3 1-3 2.3 0 1.4 1.4 2 3 2.5s3 1.1 3 2.5C15 16.6 13.5 17.5 12 17.5c-1.1 0-2.1-.5-2.7-1.4"/><line x1="12" y1="7" x2="12" y2="8.2"/><line x1="12" y1="16.8" x2="12" y2="18"/></svg></div>
+        <div>
+          <h3>Reduce Costs By Up To 70%</h3>
+          <p>Get more done for less with AI employees that scale with you.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></div>
+        <div>
+          <h3>Save 10–30+ Hours Per Week</h3>
+          <p>Automate the busywork and get your time back.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v7c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V5l-8-3z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+        <div>
+          <h3>Better Work. Fewer Errors.</h3>
+          <p>Consistent. Accurate. Reliable results every time.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
+        <div>
+          <h3>Scale Without The Overhead</h3>
+          <p>Grow your business without hiring more full-time staff.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg></div>
+        <div>
+          <h3>Focus On What Matters</h3>
+          <p>Let AI handle the rest while you focus on growth.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── HOW IT WORKS ───────────── -->
+<section class="reveal" id="how" style="padding-top:0">
+  <div class="container">
+    <div class="how">
+      <span class="section-eyebrow">Simple. Fast. Done.</span>
+      <h2 class="section-title">How <span class="green">DoneAi</span> works</h2>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h4>We Learn Your Business</h4>
+          <p>We analyze your workflows and find the high-impact tasks to automate.</p>
+        </div>
+        <div class="step-arrow">
+          <svg width="34" height="20" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="10" x2="30" y2="10"/><polyline points="22 2 30 10 22 18"/></svg>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h4>We Deploy Your AI Employees</h4>
+          <p>We set up custom AI employees trained to work like your best team.</p>
+        </div>
+        <div class="step-arrow">
+          <svg width="34" height="20" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="10" x2="30" y2="10"/><polyline points="22 2 30 10 22 18"/></svg>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h4>You Get More Done</h4>
+          <p>Your AI employees get to work while you focus on growth.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── RESULTS + PRICING ───────────── -->
+<section class="reveal" id="results" style="padding-top:0">
+  <div class="container">
+    <div class="results">
+      <div>
+        <span class="results-eyebrow">Real Results. Real Businesses.</span>
+        <h2>See the impact <span class="green">DoneAi</span><br>makes every day.</h2>
+        <div class="stat-grid">
+          <div class="stat"><div class="val" data-counter="70" data-suffix="%">0%</div><div class="lbl">Average Cost Savings</div></div>
+          <div class="stat"><div class="val" data-counter="30" data-suffix="+">0+</div><div class="lbl">Hours Saved Per Week</div></div>
+          <div class="stat"><div class="val" data-counter="98" data-suffix="%">0%</div><div class="lbl">Task Accuracy Rate</div></div>
+          <div class="stat"><div class="val" data-counter="200" data-suffix="+">0+</div><div class="lbl">Businesses Served</div></div>
+        </div>
+
+        <div class="testimonial">
+          <div class="avatar">
+            <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="bgg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#cbd5e1"/><stop offset="1" stop-color="#94a3b8"/></linearGradient></defs>
+              <rect width="60" height="60" fill="url(#bgg)"/>
+              <circle cx="30" cy="24" r="10" fill="#f1d9bf"/>
+              <path d="M10 60 Q30 38 50 60 Z" fill="#2e3a51"/>
+              <path d="M22 18 Q30 12 38 18 Q40 14 30 12 Q20 14 22 18 Z" fill="#3b2417"/>
+            </svg>
+          </div>
+          <div>
+            <p class="q">“DoneAi is like having an entire team working behind the scenes. It's changed the way we operate.”</p>
+            <div class="meta">
+              <span>– Jason H., CEO of GrowthLab</span>
+              <span class="stars">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing-card" id="pricing">
+        <svg class="checkmark-deco" viewBox="0 0 140 140">
+          <g stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" opacity=".55">
+            <line x1="70" y1="6" x2="70" y2="22"/>
+            <line x1="70" y1="118" x2="70" y2="134"/>
+            <line x1="6" y1="70" x2="22" y2="70"/>
+            <line x1="118" y1="70" x2="134" y2="70"/>
+            <line x1="22" y1="22" x2="33" y2="33"/>
+            <line x1="118" y1="22" x2="107" y2="33"/>
+            <line x1="22" y1="118" x2="33" y2="107"/>
+            <line x1="118" y1="118" x2="107" y2="107"/>
+            <line x1="105" y1="35" x2="115" y2="40" opacity=".5"/>
+            <line x1="35" y1="35" x2="25" y2="40" opacity=".5"/>
+          </g>
+          <circle cx="70" cy="70" r="42" fill="#16a34a" opacity=".22"/>
+          <path d="M50 71 L65 86 L94 56" fill="none" stroke="#16a34a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Start Your 14-Day Pilot</h3>
+        <p class="sub">Experience the power of AI employees in your business.</p>
+        <div class="price-row">
+          <div class="price">$1,000</div>
+          <ul class="price-list">
+            <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>14-Day Pilot</li>
+            <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Custom AI Employees</li>
+            <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Setup &amp; Onboarding</li>
+            <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Full Support</li>
+          </ul>
+        </div>
+        <button class="btn btn-primary" data-action="pilot">Start Your Pilot — Only $1,000
+          <span class="arr"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+        </button>
+        <div class="fine">No Long-Term Contracts. Cancel Anytime.</div>
+      </div>
+    </div>
+
+    <!-- BADGES -->
+    <div class="badges">
+      <div class="badge">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5" y1="5" x2="19" y2="19"/></svg></div>
+        <div><h5>14-Day Money-Back Guarantee</h5><p>Not satisfied? Get a full refund.</p></div>
+      </div>
+      <div class="badge">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13l-4 4-2-2"/></svg></div>
+        <div><h5>No Long-Term Contracts</h5><p>Stay because it works, not because you're locked in.</p></div>
+      </div>
+      <div class="badge">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div><h5>Secure &amp; Confidential</h5><p>Your data is safe with enterprise-grade security.</p></div>
+      </div>
+      <div class="badge">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3z"/><path d="M3 19a2 2 0 0 0 2 2h1v-6H3z"/></svg></div>
+        <div><h5>Dedicated Support</h5><p>Real people. Real support. Whenever you need it.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── FINAL CTA ───────────── -->
+<section style="padding-top:0;padding-bottom:32px" class="reveal" id="about">
+  <div class="container">
+    <div class="final-cta">
+      <div class="left">
+        <div class="icon">
+          <svg viewBox="0 0 78 78">
+            <g stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".85">
+              <line x1="39" y1="2" x2="39" y2="12"/>
+              <line x1="39" y1="66" x2="39" y2="76"/>
+              <line x1="2" y1="39" x2="12" y2="39"/>
+              <line x1="66" y1="39" x2="76" y2="39"/>
+              <line x1="12" y1="12" x2="20" y2="20"/>
+              <line x1="66" y1="12" x2="58" y2="20"/>
+              <line x1="12" y1="66" x2="20" y2="58"/>
+              <line x1="66" y1="66" x2="58" y2="58"/>
+            </g>
+            <circle cx="39" cy="39" r="25" fill="#fff"/>
+            <path d="M27 40.5 L36 49 L52 33" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <h2>Ready to get more done?</h2>
+          <p>Start your pilot today and see results in 14 days.</p>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg" data-action="pilot">Start Your Pilot — Only $1,000
+        <span class="arr"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── FOOTER ───────────── -->
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div>
+        <a href="#top" class="brand" aria-label="DoneAi">
+          <span class="brand-mark">
+            <svg viewBox="0 0 38 38"><circle cx="19" cy="19" r="13" fill="#16a34a"/><path d="M12 19.5 L17 24 L26 14.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="brand-name">Done<span class="ai">A</span><span class="dot">i</span></span>
+        </a>
+        <p class="blurb">AI employees that handle the busywork so your team can focus on what actually grows the business.</p>
+      </div>
+      <div>
+        <h6>Product</h6>
+        <a href="#employees">AI Employees</a>
+        <a href="#how">How It Works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#results">Results</a>
+      </div>
+      <div>
+        <h6>Solutions</h6>
+        <a href="#">Sales &amp; Lead Gen</a>
+        <a href="#">Marketing</a>
+        <a href="#">Support</a>
+        <a href="#">Operations</a>
+      </div>
+      <div>
+        <h6>Company</h6>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <h6>Legal</h6>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 DoneAi, Inc. All rights reserved.</span>
+      <div class="socials">
+        <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.881 3.87 6 2.5 6S0 4.881 0 3.5 1.119 1 2.5 1s2.48 1.119 2.48 2.5zM.22 8h4.56v13H.22V8zm7.51 0h4.37v1.78h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 6.99V21h-4.56v-5.7c0-1.36-.02-3.11-1.9-3.11-1.9 0-2.19 1.49-2.19 3.02V21H7.73V8z"/></svg></a>
+        <a href="#" aria-label="X"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2H21.5l-7.36 8.41L23 22h-6.78l-5.31-6.94L4.8 22H1.54l7.87-9-7.94-11h6.95l4.8 6.34L18.244 2zm-1.19 18h1.82L7.06 4H5.11l11.94 16z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.6 12 3.6 12 3.6s-7.6 0-9.4.5A3 3 0 0 0 .5 6.2C0 8 0 12 0 12s0 4 .5 5.8a3 3 0 0 0 2.1 2.1c1.8.5 9.4.5 9.4.5s7.6 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 16 24 12 24 12s0-4-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+</main>
+
+<!-- Toast for fake CTA -->
+<div id="toast" style="position:fixed;left:50%;bottom:30px;transform:translate(-50%, 20px);background:#0b1220;color:#fff;padding:14px 22px;border-radius:999px;font-size:14px;font-weight:600;box-shadow:0 20px 40px -10px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.16,.84,.44,1);z-index:100">
+  <span style="display:inline-flex;align-items:center;gap:10px"><span style="width:8px;height:8px;border-radius:999px;background:#22c55e"></span>Pilot request received. We'll be in touch within 24 hours.</span>
+</div>
+
+<script>
+(() => {
+  // Nav scroll state
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  // Dropdown
+  document.querySelectorAll('[data-toggle="menu"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const parent = btn.closest('.has-menu');
+      const open = !parent.classList.contains('is-open');
+      document.querySelectorAll('.has-menu').forEach(p => p.classList.remove('is-open'));
+      if (open) parent.classList.add('is-open');
+      btn.setAttribute('aria-expanded', open);
+    });
+  });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.has-menu').forEach(p => p.classList.remove('is-open'));
+  });
+
+  // Mobile nav
+  document.getElementById('navToggle')?.addEventListener('click', () => {
+    nav.classList.toggle('is-mobile-open');
+  });
+  document.querySelectorAll('#navMobile a').forEach(a => a.addEventListener('click', () => nav.classList.remove('is-mobile-open')));
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Counter animation
+  const animateCount = (el) => {
+    const target = +el.dataset.counter;
+    const suffix = el.dataset.suffix || '';
+    const dur = 1400;
+    const start = performance.now();
+    const fmt = (n) => target >= 1000 ? n.toLocaleString() : String(n);
+    const tick = (t) => {
+      const p = Math.min(1, (t - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = Math.round(target * eased);
+      el.textContent = fmt(v) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const counters = document.querySelectorAll('[data-counter]');
+  const cio = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting) { animateCount(en.target); cio.unobserve(en.target); } });
+  }, { threshold: 0.4 });
+  counters.forEach(c => cio.observe(c));
+
+  // Chart line draw
+  const line = document.getElementById('chartLine');
+  if (line) {
+    const obs = new IntersectionObserver((es) => {
+      es.forEach(e => { if (e.isIntersecting) { line.style.transition = 'stroke-dashoffset 1.6s cubic-bezier(.2,.7,.1,1)'; line.style.strokeDashoffset = '0'; obs.disconnect(); } });
+    }, { threshold: 0.4 });
+    obs.observe(line);
+  }
+
+  // Sidebar item interaction
+  document.querySelectorAll('.dash-side .side-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.dash-side .side-item').forEach(i => i.classList.remove('is-active'));
+      item.classList.add('is-active');
+    });
+  });
+
+  // CTA toast
+  const toast = document.getElementById('toast');
+  let toastT;
+  const showToast = () => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translate(-50%, 0)';
+    clearTimeout(toastT);
+    toastT = setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translate(-50%, 20px)';
+    }, 2800);
+  };
+  document.querySelectorAll('[data-action="pilot"], .btn-primary').forEach(b => {
+    if (b.tagName === 'A' && b.getAttribute('href')?.startsWith('#')) return;
+    b.addEventListener('click', (e) => {
+      if (b.tagName === 'A') return;
+      e.preventDefault();
+      showToast();
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

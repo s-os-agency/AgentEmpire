@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DoneAi — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<div class="app" data-screen-label="DoneAi Dashboard">
+  <div class="scrim" id="scrim"></div>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <a href="index.html" class="sb-brand">
+      <span class="mark">
+        <svg viewBox="0 0 38 38"><circle cx="19" cy="19" r="13" fill="#16a34a"/><path d="M12 19.5 L17 24 L26 14.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      Done<span class="dot">Ai</span>
+    </a>
+
+    <div class="sb-section">Workspace</div>
+    <div class="nav-item active" data-view="overview">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Overview
+    </div>
+    <div class="nav-item" data-view="employees">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      AI Employees <span class="badge">5</span>
+    </div>
+    <div class="nav-item" data-view="tasks">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tasks <span class="badge">8</span>
+    </div>
+    <div class="nav-item" data-view="reports">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Reports
+    </div>
+    <div class="nav-item" data-view="integrations">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M6.5 10v2.5a2 2 0 0 0 2 2H10"/><path d="M17.5 10v1"/></svg>
+      Integrations
+    </div>
+    <div class="nav-item" data-view="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </div>
+
+    <div class="sb-spacer"></div>
+
+    <div class="sb-card">
+      <div class="t">Need another AI Employee?</div>
+      <div class="d">Deploy a custom AI employee trained on your workflows.</div>
+      <a class="up" data-intake="New AI Employee request">Request one</a>
+    </div>
+
+    <div class="sb-user">
+      <div class="av">AC</div>
+      <div>
+        <div class="nm">Alex Chen</div>
+        <div class="em">Acme Co · Pro</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn mobile-toggle" id="mobileToggle" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+      <div class="crumbs"><span>DoneAi</span><span>/</span><span class="here" id="crumbHere">Overview</span></div>
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search tasks, employees…" />
+      </label>
+      <button class="icon-btn" data-intake="Support request" aria-label="Notifications"><span class="dot"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+      <button class="icon-btn" data-intake="Support request" aria-label="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+    </header>
+
+    <div class="content">
+
+      <!-- ============ OVERVIEW ============ -->
+      <section class="view active" id="view-overview" data-screen-label="Overview">
+        <div class="page-head">
+          <div><h1>Good afternoon, Alex</h1><p>Here's what your AI workforce accomplished this month.</p></div>
+          <div class="head-actions">
+            <button class="btn btn-ghost" data-intake="Support request"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Talk to us</button>
+            <button class="btn btn-primary" data-view-jump="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Task</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="top"><div class="ic" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div></div>
+            <div class="label">Tasks Completed</div>
+            <div class="value" data-counter="2847">0</div>
+            <div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>58% vs last month</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic" style="background:var(--blue-tint);color:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></div></div>
+            <div class="label">Time Saved</div>
+            <div class="value" data-counter="126" data-suffix="h">0</div>
+            <div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>61% vs last month</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div>
+            <div class="label">Cost Saved</div>
+            <div class="value" data-counter="18650" data-prefix="$">0</div>
+            <div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>72% vs last month</div>
+          </div>
+          <div class="kpi">
+            <div class="top"><div class="ic" style="background:var(--purple-tint);color:var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v7c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V5l-8-3z"/><polyline points="9 12 11 14 15 10"/></svg></div></div>
+            <div class="label">Accuracy Rate</div>
+            <div class="value" data-counter="98" data-suffix="%">0</div>
+            <div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>2% vs last month</div>
+          </div>
+        </div>
+
+        <div class="ov-grid">
+          <div class="card chart-card">
+            <div class="card-head">
+              <h3>Tasks Completed Over Time</h3>
+              <span class="pill green"><span class="d"></span>+58% this month</span>
+            </div>
+            <div class="chart-wrap">
+              <svg class="bigchart" id="ovLine" viewBox="0 0 600 230" preserveAspectRatio="none"></svg>
+              <div class="chart-legend" style="padding:0 4px">
+                <span class="leg"><span class="sw" style="background:#16a34a"></span>Tasks completed</span>
+                <span class="leg" style="margin-left:auto;color:var(--muted-2)">Jan – Dec 2026</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card activity">
+            <div class="card-head"><h3>Live Activity</h3><span class="link" data-view-jump="tasks">View all</span></div>
+            <div class="act-item">
+              <div class="ai-dot" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div>
+              <div><div class="txt"><b>Lead Qualifier</b> scored 14 new inbound leads</div><div class="time">2 min ago</div></div>
+            </div>
+            <div class="act-item">
+              <div class="ai-dot" style="background:var(--blue-tint);color:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>
+              <div><div class="txt"><b>Content Creator</b> drafted 3 LinkedIn posts</div><div class="time">18 min ago</div></div>
+            </div>
+            <div class="act-item">
+              <div class="ai-dot" style="background:var(--amber-tint);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+              <div><div class="txt"><b>Inbox Manager</b> replied to 27 support emails</div><div class="time">41 min ago</div></div>
+            </div>
+            <div class="act-item">
+              <div class="ai-dot" style="background:var(--purple-tint);color:var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+              <div><div class="txt"><b>Data Processor</b> cleaned 1,204 CRM records</div><div class="time">1 hr ago</div></div>
+            </div>
+            <div class="act-item">
+              <div class="ai-dot" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="txt"><b>Lead Qualifier</b> booked 2 demo calls</div><div class="time">2 hr ago</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="card-head"><h3>Your AI Employees</h3><span class="link" data-view-jump="employees">Manage</span></div>
+          <div class="emp-mini">
+            <div class="emp-av" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div>
+            <div class="meta"><div class="nm">Lead Qualifier</div><div class="ro">Finding &amp; qualifying leads</div></div>
+            <div class="bar"><span style="width:86%"></span></div>
+            <span class="pill green"><span class="d"></span>Active</span>
+          </div>
+          <div class="emp-mini">
+            <div class="emp-av" style="background:var(--blue-tint);color:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></div>
+            <div class="meta"><div class="nm">Content Creator</div><div class="ro">Writing posts &amp; content</div></div>
+            <div class="bar"><span style="width:72%"></span></div>
+            <span class="pill green"><span class="d"></span>Active</span>
+          </div>
+          <div class="emp-mini">
+            <div class="emp-av" style="background:var(--amber-tint);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+            <div class="meta"><div class="nm">Inbox Manager</div><div class="ro">Handling emails</div></div>
+            <div class="bar"><span style="width:64%"></span></div>
+            <span class="pill green"><span class="d"></span>Active</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ AI EMPLOYEES ============ -->
+      <section class="view" id="view-employees" data-screen-label="AI Employees">
+        <div class="page-head">
+          <div><h1>AI Employees</h1><p>Manage and deploy your autonomous workforce.</p></div>
+          <div class="head-actions">
+            <button class="btn btn-primary" id="hireBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Hire an Employee</button>
+          </div>
+        </div>
+
+        <div class="emp-grid">
+          <!-- card -->
+          <div class="emp-card">
+            <div class="row1">
+              <div class="emp-av" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div>
+              <div style="flex:1"><div class="nm">Lead Qualifier</div><div class="ro">Sales &amp; Lead Gen</div></div>
+              <span class="pill green"><span class="d"></span>Active</span>
+            </div>
+            <div class="desc">Finds, scores, and qualifies inbound leads, then books demos with the best fits — around the clock.</div>
+            <div class="stats">
+              <div class="stat"><div class="v">1,284</div><div class="l">Leads scored</div></div>
+              <div class="stat"><div class="v">96%</div><div class="l">Accuracy</div></div>
+              <div class="stat"><div class="v">24/7</div><div class="l">Uptime</div></div>
+            </div>
+            <div class="foot"><span style="font-size:12.5px;color:var(--muted);font-weight:600">Working now</span><div class="switch on"></div></div>
+          </div>
+
+          <div class="emp-card">
+            <div class="row1">
+              <div class="emp-av" style="background:var(--blue-tint);color:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></div>
+              <div style="flex:1"><div class="nm">Content Creator</div><div class="ro">Marketing &amp; Content</div></div>
+              <span class="pill green"><span class="d"></span>Active</span>
+            </div>
+            <div class="desc">Writes posts, newsletters, and ad copy in your brand voice — drafts ready for review every morning.</div>
+            <div class="stats">
+              <div class="stat"><div class="v">342</div><div class="l">Pieces written</div></div>
+              <div class="stat"><div class="v">4.8</div><div class="l">Avg rating</div></div>
+              <div class="stat"><div class="v">24/7</div><div class="l">Uptime</div></div>
+            </div>
+            <div class="foot"><span style="font-size:12.5px;color:var(--muted);font-weight:600">Working now</span><div class="switch on"></div></div>
+          </div>
+
+          <div class="emp-card">
+            <div class="row1">
+              <div class="emp-av" style="background:var(--amber-tint);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+              <div style="flex:1"><div class="nm">Inbox Manager</div><div class="ro">Customer Support</div></div>
+              <span class="pill green"><span class="d"></span>Active</span>
+            </div>
+            <div class="desc">Triages, drafts, and sends replies to support and sales emails — escalating only what needs a human.</div>
+            <div class="stats">
+              <div class="stat"><div class="v">5,910</div><div class="l">Emails handled</div></div>
+              <div class="stat"><div class="v">2m</div><div class="l">Avg response</div></div>
+              <div class="stat"><div class="v">24/7</div><div class="l">Uptime</div></div>
+            </div>
+            <div class="foot"><span style="font-size:12.5px;color:var(--muted);font-weight:600">Working now</span><div class="switch on"></div></div>
+          </div>
+
+          <div class="emp-card">
+            <div class="row1">
+              <div class="emp-av" style="background:var(--purple-tint);color:var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg></div>
+              <div style="flex:1"><div class="nm">Data Processor</div><div class="ro">Operations</div></div>
+              <span class="pill green"><span class="d"></span>Active</span>
+            </div>
+            <div class="desc">Cleans, enriches, and organizes your CRM and spreadsheets — keeping every record accurate and deduped.</div>
+            <div class="stats">
+              <div class="stat"><div class="v">48k</div><div class="l">Records cleaned</div></div>
+              <div class="stat"><div class="v">99%</div><div class="l">Accuracy</div></div>
+              <div class="stat"><div class="v">24/7</div><div class="l">Uptime</div></div>
+            </div>
+            <div class="foot"><span style="font-size:12.5px;color:var(--muted);font-weight:600">Working now</span><div class="switch on"></div></div>
+          </div>
+
+          <div class="emp-card paused">
+            <div class="row1">
+              <div class="emp-av" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14"/></svg></div>
+              <div style="flex:1"><div class="nm">Report Builder</div><div class="ro">Analytics</div></div>
+              <span class="pill gray"><span class="d"></span>Paused</span>
+            </div>
+            <div class="desc">Compiles weekly performance reports across all your tools and delivers them straight to your inbox.</div>
+            <div class="stats">
+              <div class="stat"><div class="v">86</div><div class="l">Reports built</div></div>
+              <div class="stat"><div class="v">100%</div><div class="l">On time</div></div>
+              <div class="stat"><div class="v">—</div><div class="l">Paused</div></div>
+            </div>
+            <div class="foot"><span style="font-size:12.5px;color:var(--muted);font-weight:600">Resume anytime</span><div class="switch"></div></div>
+          </div>
+
+          <!-- hire -->
+          <div class="hire-card" id="hireBtn2" onclick="document.getElementById('hireBtn').click()">
+            <div class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="t">Hire a new AI Employee</div>
+            <div class="s">Custom-trained for your workflow</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TASKS ============ -->
+      <section class="view" id="view-tasks" data-screen-label="Tasks">
+        <div class="page-head">
+          <div><h1>Tasks</h1><p>Everything your AI employees are working on.</p></div>
+          <div class="head-actions">
+            <button class="btn btn-primary" id="addTaskBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Task</button>
+          </div>
+        </div>
+
+        <div class="task-toolbar">
+          <button class="filter-chip active" data-filter="all">All <span class="n" id="fcAll">8</span></button>
+          <button class="filter-chip" data-filter="active">Active <span class="n" id="fcActive">6</span></button>
+          <button class="filter-chip" data-filter="done">Completed <span class="n" id="fcDone">2</span></button>
+        </div>
+
+        <div class="card" style="padding:8px 4px 4px">
+          <table class="task-table">
+            <thead><tr><th style="width:42px"></th><th>Task</th><th style="width:200px">Assigned to</th><th style="width:110px">Priority</th><th style="width:150px">Status</th></tr></thead>
+            <tbody id="taskBody">
+              <tr class="task-row">
+                <td><div class="task-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></td>
+                <td><div class="t-name">Qualify 50 inbound leads from last week's webinar</div><div class="t-sub">Due today</div></td>
+                <td><div class="t-assignee"><div class="av" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div><span>Lead Qualifier</span></div></td>
+                <td><span class="prio high">High</span></td>
+                <td><span class="pill blue t-status"><span class="d"></span>In progress</span></td>
+              </tr>
+              <tr class="task-row">
+                <td><div class="task-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></td>
+                <td><div class="t-name">Draft 5 LinkedIn posts for product launch</div><div class="t-sub">Due tomorrow</div></td>
+                <td><div class="t-assignee"><div class="av" style="background:var(--blue-tint);color:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><span>Content Creator</span></div></td>
+                <td><span class="prio high">High</span></td>
+                <td><span class="pill blue t-status"><span class="d"></span>In progress</span></td>
+              </tr>
+              <tr class="task-row">
+                <td><div class="task-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></td>
+                <td><div class="t-name">Clear support inbox backlog</div><div class="t-sub">Recurring · daily</div></td>
+                <td><div class="t-assignee"><div class="av" style="background:var(--amber-tint);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div><span>Inbox Manager</span></div></td>
+                <td><span class="prio med">Medium</span></td>
+                <td><span class="pill blue t-status"><span class="d"></span>In progress</span></td>
+              </tr>
+              <tr class="task-row">
+                <td><div class="task-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></td>
+                <td><div class="t-name">Dedupe &amp; enrich 1,200 CRM contacts</div><div class="t-sub">Due Fri</div></td>
+                <td><div class="t-assignee"><div class="av" style="background:var(--purple-tint);color:var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><span>Data Processor</span></div></td>
+                <td><span class="prio med">Medium</span></td>
+                <td><span class="pill blue t-status"><span class="d"></span>In progress</span></td>
+              </tr>
+              <tr class="task-row">
+                <td><div class="task-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></td>
+                <td><div class="t-name">Write follow-up sequence for trial signups</div><div class="t-sub">Due Mon</div></td>
+                <td><div class="t-assignee"><div class="av" style="background:var(--blue-tint);color:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><span>Content Creator</span></div></td>
+                <td><span class="prio low">Low</span></td>
+                <td><span class="pill blue t-status"><span class="d"></span>In progress</span></td>
+              </tr>
+              <tr class="task-row">
+                <td><div class="task-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></td>
+                <td><div class="t-name">Score and route 30 demo requests</div><div class="t-sub">Due today</div></td>
+                <td><div class="t-assignee"><div class="av" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div><span>Lead Qualifier</span></div></td>
+                <td><span class="prio med">Medium</span></td>
+                <td><span class="pill blue t-status"><span class="d"></span>In progress</span></td>
+              </tr>
+              <tr class="task-row done">
+                <td><div class="task-check done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></td>
+                <td><div class="t-name">Generate Q2 performance summary</div><div class="t-sub">Completed yesterday</div></td>
+                <td><div class="t-assignee"><div class="av" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14"/></svg></div><span>Report Builder</span></div></td>
+                <td><span class="prio low">Low</span></td>
+                <td><span class="pill green t-status"><span class="d"></span>Done</span></td>
+              </tr>
+              <tr class="task-row done">
+                <td><div class="task-check done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></td>
+                <td><div class="t-name">Send 200 personalized outreach emails</div><div class="t-sub">Completed 2 days ago</div></td>
+                <td><div class="t-assignee"><div class="av" style="background:var(--amber-tint);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div><span>Inbox Manager</span></div></td>
+                <td><span class="prio med">Medium</span></td>
+                <td><span class="pill green t-status"><span class="d"></span>Done</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ REPORTS ============ -->
+      <section class="view" id="view-reports" data-screen-label="Reports">
+        <div class="page-head">
+          <div><h1>Reports</h1><p>Performance, savings, and output over time.</p></div>
+          <div class="head-actions">
+            <select class="btn btn-ghost" style="padding-right:30px"><option>Last 6 months</option><option>Last 30 days</option><option>This year</option></select>
+            <button class="btn btn-ghost" data-save><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi"><div class="label">Total Output</div><div class="value">14,208</div><div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>43% YoY</div></div>
+          <div class="kpi"><div class="label">Hours Saved</div><div class="value">742h</div><div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>61% YoY</div></div>
+          <div class="kpi"><div class="label">Cost Saved</div><div class="value">$112k</div><div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>72% YoY</div></div>
+          <div class="kpi"><div class="label">Avg Accuracy</div><div class="value">98.2%</div><div class="delta up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>2pts</div></div>
+        </div>
+
+        <div class="report-grid">
+          <div class="card">
+            <div class="card-head"><h3>Tasks Completed by Month</h3><span class="pill green"><span class="d"></span>Trending up</span></div>
+            <div class="bars" id="repBars">
+              <div class="bar-col"><div class="bar" data-h="40"></div><div class="lab">Jul</div></div>
+              <div class="bar-col"><div class="bar" data-h="55"></div><div class="lab">Aug</div></div>
+              <div class="bar-col"><div class="bar" data-h="48"></div><div class="lab">Sep</div></div>
+              <div class="bar-col"><div class="bar" data-h="70"></div><div class="lab">Oct</div></div>
+              <div class="bar-col"><div class="bar" data-h="84"></div><div class="lab">Nov</div></div>
+              <div class="bar-col"><div class="bar" data-h="100"></div><div class="lab">Dec</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Output by AI Employee</h3></div>
+            <div class="donut-wrap">
+              <svg class="donut" id="repDonut" viewBox="0 0 150 150"></svg>
+              <div class="donut-legend">
+                <div class="di"><span class="sw" style="background:#16a34a"></span><span class="nm">Inbox Manager</span><span class="v">38%</span></div>
+                <div class="di"><span class="sw" style="background:#22c55e"></span><span class="nm">Lead Qualifier</span><span class="v">27%</span></div>
+                <div class="di"><span class="sw" style="background:#86efac"></span><span class="nm">Content Creator</span><span class="v">21%</span></div>
+                <div class="di"><span class="sw" style="background:#bbf7d0"></span><span class="nm">Data Processor</span><span class="v">14%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ INTEGRATIONS ============ -->
+      <section class="view" id="view-integrations" data-screen-label="Integrations">
+        <div class="page-head">
+          <div><h1>Integrations</h1><p>Connect the tools your AI employees use to get work done.</p></div>
+        </div>
+        <div class="intg-grid">
+          <div class="intg-card">
+            <div class="row1"><div class="intg-logo" style="background:#f57722">H</div><div style="flex:1"><div class="nm">HubSpot</div><div class="cat">CRM</div></div></div>
+            <div class="desc">Sync contacts, deals, and pipeline so your AI employees act on live data.</div>
+            <div class="foot"><span class="pill green"><span class="d"></span>Connected</span><div class="switch on"></div></div>
+          </div>
+          <div class="intg-card">
+            <div class="row1"><div class="intg-logo" style="background:#4a154b">S</div><div style="flex:1"><div class="nm">Slack</div><div class="cat">Messaging</div></div></div>
+            <div class="desc">Get notified and approve AI actions right from your team channels.</div>
+            <div class="foot"><span class="pill green"><span class="d"></span>Connected</span><div class="switch on"></div></div>
+          </div>
+          <div class="intg-card">
+            <div class="row1"><div class="intg-logo" style="background:#ea4335">G</div><div style="flex:1"><div class="nm">Gmail</div><div class="cat">Email</div></div></div>
+            <div class="desc">Let the Inbox Manager triage, draft, and send replies on your behalf.</div>
+            <div class="foot"><span class="pill green"><span class="d"></span>Connected</span><div class="switch on"></div></div>
+          </div>
+          <div class="intg-card">
+            <div class="row1"><div class="intg-logo" style="background:#0a66c2">in</div><div style="flex:1"><div class="nm">LinkedIn</div><div class="cat">Social</div></div></div>
+            <div class="desc">Publish content drafted by your Content Creator straight to your feed.</div>
+            <div class="foot"><span class="pill gray"><span class="d"></span>Not connected</span><div class="switch"></div></div>
+          </div>
+          <div class="intg-card">
+            <div class="row1"><div class="intg-logo" style="background:#635bff">St</div><div style="flex:1"><div class="nm">Stripe</div><div class="cat">Payments</div></div></div>
+            <div class="desc">Pull billing and revenue data into reports and customer workflows.</div>
+            <div class="foot"><span class="pill gray"><span class="d"></span>Not connected</span><div class="switch"></div></div>
+          </div>
+          <div class="intg-card">
+            <div class="row1"><div class="intg-logo" style="background:#26890d">Sh</div><div style="flex:1"><div class="nm">Sheets</div><div class="cat">Data</div></div></div>
+            <div class="desc">Read and write spreadsheets so the Data Processor keeps everything tidy.</div>
+            <div class="foot"><span class="pill gray"><span class="d"></span>Not connected</span><div class="switch"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SETTINGS ============ -->
+      <section class="view" id="view-settings" data-screen-label="Settings">
+        <div class="page-head">
+          <div><h1>Settings</h1><p>Manage your workspace and preferences.</p></div>
+        </div>
+
+        <div class="set-layout">
+          <nav class="set-nav">
+            <button class="active" data-panel="profile">Profile</button>
+            <button data-panel="workspace">Workspace</button>
+            <button data-panel="notifications">Notifications</button>
+            <button data-panel="email">Email Generator</button>
+            <button data-panel="voice">Voice</button>
+            <button data-panel="billing">Billing</button>
+          </nav>
+
+          <div>
+            <!-- profile -->
+            <div class="set-panel active card card-pad" id="set-profile">
+              <h3 style="margin:0 0 18px;font-size:17px;font-weight:800">Profile</h3>
+              <div class="field-row">
+                <div class="field"><label>First name</label><input type="text" value="Alex"></div>
+                <div class="field"><label>Last name</label><input type="text" value="Chen"></div>
+              </div>
+              <div class="field"><label>Email</label><input type="email" value="alex@acme.co"></div>
+              <div class="field"><label>Role</label><input type="text" value="Head of Operations"></div>
+              <button class="btn btn-primary" data-save>Save changes</button>
+            </div>
+
+            <!-- workspace -->
+            <div class="set-panel card card-pad" id="set-workspace">
+              <h3 style="margin:0 0 18px;font-size:17px;font-weight:800">Workspace</h3>
+              <div class="field"><label>Company name</label><input type="text" value="Acme Co"></div>
+              <div class="field-row">
+                <div class="field"><label>Industry</label><select><option>SaaS &amp; Tech</option><option>Agency</option><option>Ecommerce</option><option>Other</option></select></div>
+                <div class="field"><label>Team size</label><select><option>1–10</option><option selected>11–50</option><option>51–200</option><option>200+</option></select></div>
+              </div>
+              <div class="field"><label>Brand voice notes</label><textarea rows="3">Direct, confident, no fluff. Avoid emoji. Lead with the result.</textarea><div class="hint">Your AI employees use this to match your tone.</div></div>
+              <button class="btn btn-primary" data-save>Save changes</button>
+            </div>
+
+            <!-- notifications -->
+            <div class="set-panel card card-pad" id="set-notifications">
+              <h3 style="margin:0 0 6px;font-size:17px;font-weight:800">Notifications</h3>
+              <div class="toggle-row"><div><div class="t">Daily digest</div><div class="d">A morning summary of what your AI employees did.</div></div><div class="switch on"></div></div>
+              <div class="toggle-row"><div><div class="t">Approval requests</div><div class="d">Ping me when an AI action needs sign-off.</div></div><div class="switch on"></div></div>
+              <div class="toggle-row"><div><div class="t">Weekly reports</div><div class="d">Performance and savings, every Monday.</div></div><div class="switch on"></div></div>
+              <div class="toggle-row"><div><div class="t">Product updates</div><div class="d">New AI employees and features.</div></div><div class="switch"></div></div>
+              <button class="btn btn-primary" data-save style="margin-top:18px">Save changes</button>
+            </div>
+
+            <!-- email generator -->
+            <div class="set-panel card card-pad" id="set-email">
+              <h3 style="margin:0 0 4px;font-size:17px;font-weight:800">AI Email Generator</h3>
+              <p style="margin:0 0 18px;color:var(--muted);font-size:13.5px">Draft a polished email in seconds — in your workspace's brand voice. Powered by your in-app AI.</p>
+              <div class="field-row">
+                <div class="field"><label>Email type</label><select id="emType"><option>Cold outreach</option><option>Follow-up</option><option>Sales pitch</option><option>Customer support reply</option><option>Meeting request</option><option>Re-engagement</option><option>Thank you / follow-through</option></select></div>
+                <div class="field"><label>Tone</label><select id="emTone"><option>Direct &amp; confident</option><option>Warm &amp; friendly</option><option>Formal &amp; professional</option><option>Concise</option><option>Persuasive</option></select></div>
+              </div>
+              <div class="field"><label>What's it about?</label><textarea id="emBrief" rows="3" placeholder="e.g. Following up with a webinar lead who downloaded our pricing guide but hasn't replied. Offer a 15-min demo."></textarea></div>
+              <div class="field-row">
+                <div class="field"><label>Recipient (optional)</label><input id="emTo" type="text" placeholder="e.g. Jordan, Head of Ops at Northwind"></div>
+                <div class="field"><label>Sign-off as (optional)</label><input id="emFrom" type="text" placeholder="e.g. Alex from DoneAi"></div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                <button class="btn btn-primary" id="emGenerate">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l1.9 5.1L20 10l-5.1 1.9L13 17l-1.9-5.1L6 10l5.1-1.9L13 3z"/></svg>
+                  <span id="emGenLabel">Generate Email</span>
+                </button>
+                <span style="font-size:12px;color:var(--muted-2)">No setup — runs in your browser.</span>
+              </div>
+
+              <div id="emResultWrap" style="display:none;margin-top:18px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+                  <label style="font-size:13px;font-weight:700;color:var(--ink-2)">Generated draft</label>
+                  <div style="display:flex;gap:8px">
+                    <button class="btn btn-ghost btn-sm" id="emCopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+                    <button class="btn btn-ghost btn-sm" id="emRegen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Regenerate</button>
+                  </div>
+                </div>
+                <textarea id="emResult" rows="11" style="font-size:14px;line-height:1.6"></textarea>
+              </div>
+            </div>
+
+            <!-- billing -->
+            <div class="set-panel card card-pad" id="set-billing">
+              <h3 style="margin:0 0 18px;font-size:17px;font-weight:800">Billing</h3>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px;border:1px solid var(--green-soft);background:var(--green-tint-2);border-radius:var(--r-md);margin-bottom:18px;flex-wrap:wrap">
+                <div><div style="font-weight:800;font-size:16px">Pro Plan</div><div style="font-size:13px;color:var(--muted)">5 AI employees · billed monthly</div></div>
+                <div style="font-size:24px;font-weight:800;letter-spacing:-0.02em">$1,000<span style="font-size:13px;color:var(--muted);font-weight:600">/mo</span></div>
+              </div>
+              <div class="field"><label>Card on file</label><input type="text" value="•••• •••• •••• 4242" readonly></div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn btn-ghost" data-save>Update payment</button>
+                <button class="btn btn-ghost" data-intake="Billing question">Contact billing</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+<div class="modal-backdrop" id="taskModal">
+  <div class="modal">
+    <h3>New Task</h3>
+    <p class="sub">Assign work to one of your AI employees.</p>
+    <div class="field"><label>What needs to get done?</label><input type="text" id="taskInput" placeholder="e.g. Draft a launch announcement"></div>
+    <div class="field" style="margin-bottom:0">
+      <label>Assign to</label>
+      <div class="choices">
+        <div class="choice sel" data-name="Lead Qualifier"><div class="ic" style="background:var(--green-tint);color:var(--green-3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div><span class="nm">Lead Qualifier</span></div>
+        <div class="choice" data-name="Content Creator"><div class="ic" style="background:var(--blue-tint);color:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><span class="nm">Content Creator</span></div>
+        <div class="choice" data-name="Inbox Manager"><div class="ic" style="background:var(--amber-tint);color:var(--amber)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div><span class="nm">Inbox Manager</span></div>
+        <div class="choice" data-name="Data Processor"><div class="ic" style="background:var(--purple-tint);color:var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><span class="nm">Data Processor</span></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="createTask">Assign Task</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="hireModal">
+  <div class="modal">
+    <h3>Hire a new AI Employee</h3>
+    <p class="sub">Tell us the role — we'll train and deploy a custom AI employee for your workspace.</p>
+    <div class="field"><label>Role</label>
+      <select id="hireRole">
+        <option>Sales Development Rep</option>
+        <option>Social Media Manager</option>
+        <option>Customer Success Agent</option>
+        <option>Bookkeeper</option>
+        <option>Recruiter</option>
+        <option>Research Analyst</option>
+      </select>
+    </div>
+    <div class="field" style="margin-bottom:0"><label>What should they focus on?</label><textarea rows="3" placeholder="Describe the work you'd hand off…"></textarea></div>
+    <div class="actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="requestHire">Request Deployment</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="d"></span><span id="toastMsg">Saved</span></div>
+
+<script>
+  // intra-page jump buttons (overview -> other views)
+  document.addEventListener('click', (e) => {
+    const j = e.target.closest('[data-view-jump]');
+    if (j) document.querySelector('.nav-item[data-view="' + j.dataset.viewJump + '"]').click();
+  });
+</script>
+<script src="dashboard.js"></script>
+</body>
+</html>
