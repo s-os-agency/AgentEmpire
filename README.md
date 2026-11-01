@@ -2,11 +2,11 @@
 
 [![Stack](https://img.shields.io/badge/part%20of-Operator%20Stack-0f766e)](docs/ECOSYSTEM.md)
 [![Kernel](https://img.shields.io/badge/spine-S--OS-blue)](https://github.com/saifsoub/S-OS)
-[![Runtime](https://img.shields.io/badge/runtime-n8n-0f766e)](https://github.com/saifsoub/n8n)
+[![System](https://img.shields.io/badge/runtime-n8n-0f766e)](https://github.com/saifsoub/n8n)
 
-Dark-mode **operator cockpit** for running multiple businesses from one surface — opportunities, offers, decisions, content, agents, and weekly briefings. Built for multi-business operator workflows; pairs with [S-OS](https://github.com/saifsoub/S-OS) (control plane) and [n8n](https://github.com/saifsoub/n8n) (automation runtime).
+Dark-mode **operator cockpit** for running multiple businesses from one surface — opportunities, offers, decisions, content, agents, and weekly briefings. Built for multi-business operator workflows; pairs with [S-OS](https://github.com/saifsoub/S-OS) (control panel) and [n8n](https://github.com/saifsoub/n8n) (automation system).
 
-See [docs/ECOSYSTEM.md](docs/ECOSYSTEM.md) for the full stack diagram and [docs/RUNTIME.md](docs/RUNTIME.md) for the recovered Meridian/AgentEmpire runtime, deployment and verification contract.
+See [docs/ECOSYSTEM.md](docs/ECOSYSTEM.md) for the full stack diagram and [docs/RUNTIME.md](docs/RUNTIME.md) for the recovered Meridian/AgentEmpire system, deployment and verification contract.
 
 ---
 
@@ -52,7 +52,7 @@ npm run deploy:verify   # typecheck + test + production build
 npm run start           # production Node start, after build
 ```
 
-Runtime state is persisted by the configured store. Agent/API paths must fail visibly when a required provider or credential is unavailable; they must not fabricate a successful result.
+System state is persisted by the configured store. Agent/API paths must fail visibly when a required provider or credential is unavailable; they must not fabricate a successful result.
 
 ---
 
@@ -66,7 +66,7 @@ Agents are defined in `lib/agents/definitions.ts` with:
 
 Tool routing: `lib/tools/router.ts` + `lib/tools/providers.ts`.
 
-Architecture: [ARCHITECTURE.md](ARCHITECTURE.md) · Runtime: [docs/RUNTIME.md](docs/RUNTIME.md) · S-OS wiring: [docs/INTEGRATION-S-OS.md](docs/INTEGRATION-S-OS.md)
+Architecture: [ARCHITECTURE.md](ARCHITECTURE.md) · System: [docs/RUNTIME.md](docs/RUNTIME.md) · S-OS wiring: [docs/INTEGRATION-S-OS.md](docs/INTEGRATION-S-OS.md)
 
 ---
 
@@ -123,7 +123,7 @@ Aligns with S-OS `draft` / `dry_run` / `live` + `approval_status` model.
 | Repo | Link |
 |------|------|
 | S-OS (kernel) | https://github.com/saifsoub/S-OS |
-| n8n (runtime) | https://github.com/saifsoub/n8n |
+| n8n (system) | https://github.com/saifsoub/n8n |
 
 ---
 
