@@ -6,6 +6,11 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/deploy.yml'
+      - 'docker-compose.simple.yml'
+      - 'Dockerfile'
+      - '**/*.ts'
+      - '**/*.js'
+      - '**/*.json'
 
 jobs:
   deploy:
@@ -15,8 +20,8 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: srv1446443.hstgr.cloud
-          username: ${{ secrets.VPS_USER }}
-          password: ${{ secrets.VPS_PASSWORD }}
+          username: ${{ secrets.VPS_USER}}
+          password: ${{ secrets.VPS_PASSWORD}}
           script: |
             set -e
 
