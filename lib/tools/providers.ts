@@ -6,6 +6,7 @@ export type ToolStatus = "executed" | "needs_approval" | "missing_connector" | "
 
 export interface ToolRequest {
   correlationId?: string;
+  idempotencyKey?: string;
   capability: AgentCapability;
   agentId: string;
   inputs: Record<string, string>;
@@ -16,6 +17,7 @@ export interface ToolRequest {
 export interface ToolResult {
   correlationId?: string;
   receiptId?: string;
+  replayed?: boolean;
   status: ToolStatus;
   provider: ToolProviderName;
   capability: AgentCapability;

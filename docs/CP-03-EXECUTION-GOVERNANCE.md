@@ -36,3 +36,14 @@ MCP uses tools/call with params.name=capability and params.arguments=request, ch
 This increment does not add a persistent replay ledger, completed-result polling, a production S-OS binding or production publication. Existing inspect/internal/external access rules remain unchanged. Typechecking is used for this change; no software suites are added or run.
 
 A task whose selected capabilities are all completed or accepted remains IN_PROGRESS until final completion; unknown or failed effects remain BLOCKED. Status transitions clear obsolete completion timestamps, blocked reasons and approval flags so a previous state does not misrepresent the current result.
+
+
+## Durable remote replay reservations — 10 November 2026
+
+Webhook and MCP dispatch reserve an operation in the existing application's DATA_DIR/remote-executions before any network send. Exclusive file creation arbitrates concurrent callers on a shared POSIX directory; the reservation is synced before dispatch. Final provider results are atomically replaced and synced. Tokens, endpoints and raw request inputs are not stored in this ledger; explicit provider output can contain private work and remains in permission-restricted runtime storage.
+
+The optional Idempotency-Key header on POST /api/agents/run scopes each selected remote capability to one intentional operation. Reuse the same key for retries. Without the header, the agent, capability and sorted input fingerprint form a deterministic retry identity, including after the matched task becomes DONE. A deliberate new operation with identical inputs requires a different explicit key. Reusing an explicit key with different inputs or a changed provider returns unverified and sends nothing.
+
+Stored final, accepted and uncertain results are replayed with replayed=true and their original correlation ID; they never produce another network send. An interrupted reservation, partial/corrupt record or unavailable durable store also prevents dispatch and returns unverified. There is no lease-expiry takeover or automatic resend of uncertain work. Preserve reservations until an authentic upstream receipt resolves the effect. The existing inspect/internal/external permissions and owner token remain unchanged; input errors are rejected before provider work, and unexpected server errors no longer expose exception text.
+
+Deployment must mount DATA_DIR on durable storage shared by all replicas. An ephemeral/serverless filesystem or unshared per-replica directories cannot provide cross-restart or cross-replica replay protection. This source change does not configure that storage, deploy the app, poll an upstream result or connect S-OS/model runtimes. Provider-specific receipt reconciliation and an actual supported executor binding remain outstanding. Do not remove reservations or choose a fresh key merely to bypass an unresolved effect.

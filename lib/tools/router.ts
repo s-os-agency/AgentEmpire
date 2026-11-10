@@ -18,7 +18,7 @@ async function getAgentForInspection(agentId: string) {
 export async function routeAgentExecution(
   agentId: string,
   inputs: Record<string, string>,
-  options: { executionMode?: ExecutionMode } = {}
+  options: { executionMode?: ExecutionMode; idempotencyKey?: string } = {}
 ) {
   const executionMode = options.executionMode ?? "inspect";
   const agent = executionMode === "inspect" ? await getAgentForInspection(agentId) : await getAgent(agentId);
@@ -73,6 +73,7 @@ export async function routeAgentExecution(
 
       const result = await provider.execute({
         correlationId: randomUUID(),
+        idempotencyKey: options.idempotencyKey,
         capability,
         agentId,
         inputs,

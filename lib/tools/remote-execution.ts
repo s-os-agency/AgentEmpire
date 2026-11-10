@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { withDurableRemoteDispatch } from "./execution-ledger";
 import type { ToolRequest, ToolResult } from "./providers";
 
 const TIMEOUT_MS = 20_000;
@@ -7,6 +8,13 @@ const record = (value: unknown): value is Record<string, unknown> =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 
 export async function dispatchRemoteTool(
+  provider: "webhook" | "mcp", endpoint: string, token: string | undefined, request: ToolRequest
+): Promise<ToolResult> {
+  return withDurableRemoteDispatch(provider, request,
+    correlated => sendRemoteTool(provider, endpoint, token, correlated));
+}
+
+async function sendRemoteTool(
   provider: "webhook" | "mcp", endpoint: string, token: string | undefined, request: ToolRequest
 ): Promise<ToolResult> {
   const correlationId = request.correlationId || randomUUID();
