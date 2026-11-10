@@ -89,16 +89,6 @@ export async function routeAgentExecution(
       });
       createdRunIds.push(run.id);
 
-      if (matchedTask) {
-        if (result.status === "executed") {
-          await closeMatchedTask(matchedTask.id, "DONE");
-        } else if (result.status === "needs_approval") {
-          await closeMatchedTask(matchedTask.id, "WAITING_APPROVAL");
-        } else if (["failed", "missing_connector"].includes(result.status)) {
-          await closeMatchedTask(matchedTask.id, "BLOCKED", result.message);
-        }
-      }
-
       if (result.status === "needs_approval") {
         const approval = await createApproval({
           source: agentId,
@@ -128,9 +118,21 @@ export async function routeAgentExecution(
       executions.push(fallback);
       const run = await logAgentRun({ agentId, objective: inputs.objective || "", provider: fallback.provider, capability: fallback.capability, status: fallback.status, message: fallback.message });
       createdRunIds.push(run.id);
-      if (matchedTask) {
-        await closeMatchedTask(matchedTask.id, "BLOCKED", fallback.message);
-      }
+    }
+  }
+
+  // Complete the matched task only after every selected capability has finished.
+  // A successful first step must not hide an unfinished manual, failed or approval step.
+  if (matchedTask) {
+    const allCompleted = agent.selectedTools.length > 0 && agent.selectedTools.every(capability =>
+      executions.some(result => result.capability === capability && result.status === "executed")
+    );
+    if (allCompleted) {
+      await closeMatchedTask(matchedTask.id, "DONE");
+    } else if (executions.some(result => result.status === "needs_approval")) {
+      await closeMatchedTask(matchedTask.id, "WAITING_APPROVAL");
+    } else {
+      await closeMatchedTask(matchedTask.id, "BLOCKED", "Execution is incomplete. One or more selected capabilities did not complete.");
     }
   }
 

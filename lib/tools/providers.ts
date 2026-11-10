@@ -77,14 +77,10 @@ export class NativeProvider implements ToolProvider {
     }
 
     return {
-      status: "executed",
+      status: "missing_connector",
       provider: this.name,
       capability: request.capability,
-      message: "Agent executed internal operational work.",
-      result: {
-        objective: input.objective || request.summary,
-        completedInternally: true
-      }
+      message: `No native handler implements ${request.capability}. No work was completed.`
     };
   }
 }
