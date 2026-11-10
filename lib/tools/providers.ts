@@ -1,9 +1,11 @@
+import { dispatchRemoteTool } from "./remote-execution";
 import { addAsset, addContent, addLead, addTask, analyzeDecision, generateWeeklyBrief } from "@/lib/store";
 import type { AgentCapability, ToolProviderName } from "@/lib/agents/definitions";
 
-export type ToolStatus = "executed" | "needs_approval" | "missing_connector" | "queued_manual" | "failed";
+export type ToolStatus = "executed" | "needs_approval" | "missing_connector" | "queued_manual" | "failed" | "accepted" | "unverified";
 
 export interface ToolRequest {
+  correlationId?: string;
   capability: AgentCapability;
   agentId: string;
   inputs: Record<string, string>;
@@ -12,6 +14,8 @@ export interface ToolRequest {
 }
 
 export interface ToolResult {
+  correlationId?: string;
+  receiptId?: string;
   status: ToolStatus;
   provider: ToolProviderName;
   capability: AgentCapability;
@@ -101,9 +105,7 @@ export class WebhookProvider implements ToolProvider {
   capabilities(): AgentCapability[] { return ["agent.execute", "task.create", "task.subtask.create"]; }
   async execute(request: ToolRequest): Promise<ToolResult> {
     if (!this.isConfigured()) return { status: "missing_connector", provider: this.name, capability: request.capability, message: "Webhook router is not configured." };
-    const response = await fetch(process.env.WEBHOOK_ROUTER_URL!, { method: "POST", headers: { "content-type": "application/json", ...(process.env.WEBHOOK_ROUTER_TOKEN ? { authorization: `Bearer ${process.env.WEBHOOK_ROUTER_TOKEN}` } : {}) }, body: JSON.stringify(request) });
-    const payload = await response.json().catch(() => ({}));
-    return { status: response.ok ? "executed" : "failed", provider: this.name, capability: request.capability, message: response.ok ? "Webhook executed." : "Webhook failed.", result: payload };
+    return dispatchRemoteTool("webhook", process.env.WEBHOOK_ROUTER_URL!, process.env.WEBHOOK_ROUTER_TOKEN, request);
   }
 }
 
@@ -113,9 +115,7 @@ export class McpProvider implements ToolProvider {
   capabilities(): AgentCapability[] { return ["agent.execute", "task.create", "task.subtask.create", "github.issue.create"]; }
   async execute(request: ToolRequest): Promise<ToolResult> {
     if (!this.isConfigured()) return { status: "missing_connector", provider: this.name, capability: request.capability, message: "MCP server is not configured." };
-    const response = await fetch(process.env.MCP_SERVER_URL!, { method: "POST", headers: { "content-type": "application/json", ...(process.env.MCP_AUTH_TOKEN ? { authorization: `Bearer ${process.env.MCP_AUTH_TOKEN}` } : {}) }, body: JSON.stringify({ jsonrpc: "2.0", id: Date.now(), method: "tools/call", params: request }) });
-    const payload = await response.json().catch(() => ({}));
-    return { status: response.ok ? "executed" : "failed", provider: this.name, capability: request.capability, message: response.ok ? "MCP call executed." : "MCP call failed.", result: payload };
+    return dispatchRemoteTool("mcp", process.env.MCP_SERVER_URL!, process.env.MCP_AUTH_TOKEN, request);
   }
 }
 

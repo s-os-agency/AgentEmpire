@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { getAgent, getDb, logAgentRun, createApproval, findMatchingActiveTask, closeMatchedTask } from "@/lib/store";
 import { getAgentDefinition } from "@/lib/agents/definitions";
 import type { AgentCapability, ToolProviderName } from "@/lib/agents/definitions";
@@ -43,6 +44,8 @@ export async function routeAgentExecution(
       executions,
       summary: {
         preview: executions.length,
+        accepted: 0,
+        unverified: 0,
         executed: 0,
         approvals: 0,
         manual: 0,
@@ -69,6 +72,7 @@ export async function routeAgentExecution(
       if (!provider.capabilities().includes(capability)) continue;
 
       const result = await provider.execute({
+        correlationId: randomUUID(),
         capability,
         agentId,
         inputs,
@@ -84,7 +88,7 @@ export async function routeAgentExecution(
         provider: result.provider,
         capability: result.capability,
         status: result.status,
-        message: result.message,
+        message: result.correlationId ? `${result.message} [Request ${result.correlationId}${result.receiptId ? "; Receipt " + result.receiptId : ""}]` : result.message,
         createdTasks: matchedTask ? [matchedTask.id] : undefined
       });
       createdRunIds.push(run.id);
@@ -100,7 +104,7 @@ export async function routeAgentExecution(
         createdApprovalIds.push(approval.id);
       }
 
-      if (["executed", "needs_approval", "queued_manual"].includes(result.status)) {
+      if (["executed", "needs_approval", "queued_manual", "accepted", "unverified", "failed"].includes(result.status)) {
         executed = true;
         break;
       }
@@ -131,6 +135,10 @@ export async function routeAgentExecution(
       await closeMatchedTask(matchedTask.id, "DONE");
     } else if (executions.some(result => result.status === "needs_approval")) {
       await closeMatchedTask(matchedTask.id, "WAITING_APPROVAL");
+    } else if (agent.selectedTools.length > 0 && agent.selectedTools.every(capability =>
+      executions.some(result => result.capability === capability && ["executed", "accepted"].includes(result.status))
+    )) {
+      await closeMatchedTask(matchedTask.id, "IN_PROGRESS");
     } else {
       await closeMatchedTask(matchedTask.id, "BLOCKED", "Execution is incomplete. One or more selected capabilities did not complete.");
     }
@@ -148,6 +156,8 @@ export async function routeAgentExecution(
     executions,
     summary: {
       preview: 0,
+      accepted: executions.filter(r => r.status === "accepted").length,
+      unverified: executions.filter(r => r.status === "unverified").length,
       executed: executions.filter(r => r.status === "executed").length,
       approvals: executions.filter(r => r.status === "needs_approval").length,
       manual: executions.filter(r => r.status === "queued_manual").length,
