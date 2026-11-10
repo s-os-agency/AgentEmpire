@@ -5,6 +5,7 @@ import type { AgentCapability, ToolProviderName } from "@/lib/agents/definitions
 export type ToolStatus = "executed" | "needs_approval" | "missing_connector" | "queued_manual" | "failed" | "accepted" | "unverified";
 
 export interface ToolRequest {
+  operationId?: string;
   correlationId?: string;
   idempotencyKey?: string;
   capability: AgentCapability;
@@ -15,6 +16,7 @@ export interface ToolRequest {
 }
 
 export interface ToolResult {
+  operationId?: string;
   correlationId?: string;
   receiptId?: string;
   replayed?: boolean;

@@ -89,7 +89,7 @@ export async function routeAgentExecution(
         provider: result.provider,
         capability: result.capability,
         status: result.status,
-        message: result.correlationId ? `${result.message} [Request ${result.correlationId}${result.receiptId ? "; Receipt " + result.receiptId : ""}]` : result.message,
+        message: result.operationId ? (result.message + " [Operation " + result.operationId + "; Request " + result.correlationId + (result.receiptId ? "; Receipt " + result.receiptId : "") + "]") : result.correlationId ? `${result.message} [Request ${result.correlationId}${result.receiptId ? "; Receipt " + result.receiptId : ""}]` : result.message,
         createdTasks: matchedTask ? [matchedTask.id] : undefined
       });
       createdRunIds.push(run.id);
