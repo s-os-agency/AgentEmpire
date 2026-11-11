@@ -78,11 +78,7 @@ Before a release candidate can be treated as runtime-ready, run:
 npm run deploy:verify
 ```
 
-That command executes, in order:
-
-1. TypeScript typecheck;
-2. Vitest test suite;
-3. Next.js production build.
+That command executes TypeScript checking followed by the Next.js production build. It does not run a test suite. Follow the owner's no-tests instruction in `AGENTS.md` and inspect source, saved changes, and actual runtime evidence.
 
 Production boot remains:
 

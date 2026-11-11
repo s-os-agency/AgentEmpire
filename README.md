@@ -46,9 +46,8 @@ Repository helpers and verification:
 npm run install:local   # reproducible npm ci
 npm run boot:local      # local Next.js dev server
 npm run typecheck       # TypeScript
-npm run test            # vitest
 npm run build           # production build
-npm run deploy:verify   # typecheck + test + production build
+npm run deploy:verify   # typecheck + production build
 npm run start           # production Node start, after build
 ```
 

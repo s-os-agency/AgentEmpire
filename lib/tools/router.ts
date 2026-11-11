@@ -12,6 +12,7 @@ export async function routeAgentExecution(agentId: string, inputs: Record<string
   const executions: ToolResult[] = [];
   const createdRunIds: string[] = [];
   const createdApprovalIds: string[] = [];
+  const outcomes: ToolResult[] = [];
   const matchedTask = await findMatchingActiveTask(inputs.objective || "");
 
   for (const selectedTool of agent.selectedTools) {
@@ -45,16 +46,6 @@ export async function routeAgentExecution(agentId: string, inputs: Record<string
       });
       createdRunIds.push(run.id);
 
-      if (matchedTask) {
-        if (result.status === "executed") {
-          await closeMatchedTask(matchedTask.id, "DONE");
-        } else if (result.status === "needs_approval") {
-          await closeMatchedTask(matchedTask.id, "WAITING_APPROVAL");
-        } else if (["failed", "missing_connector"].includes(result.status)) {
-          await closeMatchedTask(matchedTask.id, "BLOCKED", result.message);
-        }
-      }
-
       if (result.status === "needs_approval") {
         const approval = await createApproval({
           source: agentId,
@@ -67,6 +58,7 @@ export async function routeAgentExecution(agentId: string, inputs: Record<string
       }
 
       if (["executed", "needs_approval", "queued_manual"].includes(result.status)) {
+        outcomes.push(result);
         executed = true;
         break;
       }
@@ -80,11 +72,21 @@ export async function routeAgentExecution(agentId: string, inputs: Record<string
         message: `No configured provider executed ${capability}. The action remains available for manual/provider follow-up.`
       };
       executions.push(fallback);
+      outcomes.push(fallback);
       const run = await logAgentRun({ agentId, objective: inputs.objective || "", provider: fallback.provider, capability: fallback.capability, status: fallback.status, message: fallback.message });
       createdRunIds.push(run.id);
-      if (matchedTask) {
-        await closeMatchedTask(matchedTask.id, "BLOCKED", fallback.message);
-      }
+
+    }
+  }
+
+  if (matchedTask && outcomes.length > 0) {
+    const incomplete = outcomes.find(result => ["failed", "missing_connector", "queued_manual"].includes(result.status));
+    if (incomplete) {
+      await closeMatchedTask(matchedTask.id, "BLOCKED", incomplete.message);
+    } else if (outcomes.some(result => result.status === "needs_approval")) {
+      await closeMatchedTask(matchedTask.id, "WAITING_APPROVAL");
+    } else if (outcomes.every(result => result.status === "executed")) {
+      await closeMatchedTask(matchedTask.id, "DONE");
     }
   }
 

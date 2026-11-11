@@ -1,4 +1,4 @@
-import { addAsset, addContent, addLead, addTask, analyzeDecision, generateWeeklyBrief } from "@/lib/store";
+import { addAsset, addContent, addLead, addOpportunity, addTask, analyzeDecision, generateWeeklyBrief } from "@/lib/store";
 import type { AgentCapability, ToolProviderName } from "@/lib/agents/definitions";
 
 export type ToolStatus = "executed" | "needs_approval" | "missing_connector" | "queued_manual" | "failed";
@@ -40,7 +40,7 @@ export class NativeProvider implements ToolProvider {
   name: ToolProviderName = "native";
   isConfigured() { return true; }
   capabilities(): AgentCapability[] {
-    return ["agent.execute", "task.create", "task.subtask.create", "content.create", "opportunity.manage", "decision.manage", "lead.manage", "asset.manage", "briefing.create"];
+    return ["task.create", "task.subtask.create", "content.create", "opportunity.manage", "decision.manage", "lead.manage", "asset.manage", "briefing.create"];
   }
 
   async execute(request: ToolRequest): Promise<ToolResult> {
@@ -49,6 +49,11 @@ export class NativeProvider implements ToolProvider {
     if (request.capability === "content.create") {
       const item = await addContent({ pillar: input.pillar || "Execution", topic: input.topic || createReadableTaskTitle(input, "New content work"), angle: input.angle || "Operational", hook: input.hook || createReadableTaskTitle(input, "New content work"), body: input.body || request.summary, platform: input.platform || "Internal" });
       return { status: "executed", provider: this.name, capability: request.capability, message: "Content work created.", result: item };
+    }
+
+    if (request.capability === "opportunity.manage") {
+      const item = await addOpportunity({ title: input.title || createReadableTaskTitle(input, "Operational opportunity"), description: input.description || request.summary, type: input.type || "Opportunity", source: input.source || "agent", expectedRevenue: asNumber(input.expectedRevenue, 0), nextAction: input.nextAction || "", dueDate: input.dueDate || "" });
+      return { status: "executed", provider: this.name, capability: request.capability, message: "Opportunity record created.", result: item };
     }
 
     if (request.capability === "lead.manage") {
@@ -77,14 +82,10 @@ export class NativeProvider implements ToolProvider {
     }
 
     return {
-      status: "executed",
+      status: "missing_connector",
       provider: this.name,
       capability: request.capability,
-      message: "Agent executed internal operational work.",
-      result: {
-        objective: input.objective || request.summary,
-        completedInternally: true
-      }
+      message: `No native implementation exists for ${request.capability}.`
     };
   }
 }
@@ -95,7 +96,7 @@ export class ComposioProvider implements ToolProvider {
   capabilities(): AgentCapability[] { return ["email.draft", "calendar.create", "github.issue.create"]; }
   async execute(request: ToolRequest): Promise<ToolResult> {
     if (!this.isConfigured()) return { status: "missing_connector", provider: this.name, capability: request.capability, message: "Composio is not configured. Add COMPOSIO_API_KEY in Netlify environment variables." };
-    return { status: "needs_approval", provider: this.name, capability: request.capability, approvalRequired: true, message: "Connected provider prepared the external action. Final approval is required before external execution.", result: { userId: process.env.COMPOSIO_USER_ID || "seif", plannedAction: request.capability, inputs: request.inputs } };
+    return { status: "missing_connector", provider: this.name, capability: request.capability, message: "A Composio key is configured, but this provider has no execution adapter for the requested capability. No external action was prepared or performed." };
   }
 }
 
@@ -106,8 +107,9 @@ export class WebhookProvider implements ToolProvider {
   async execute(request: ToolRequest): Promise<ToolResult> {
     if (!this.isConfigured()) return { status: "missing_connector", provider: this.name, capability: request.capability, message: "Webhook router is not configured." };
     const response = await fetch(process.env.WEBHOOK_ROUTER_URL!, { method: "POST", headers: { "content-type": "application/json", ...(process.env.WEBHOOK_ROUTER_TOKEN ? { authorization: `Bearer ${process.env.WEBHOOK_ROUTER_TOKEN}` } : {}) }, body: JSON.stringify(request) });
-    const payload = await response.json().catch(() => ({}));
-    return { status: response.ok ? "executed" : "failed", provider: this.name, capability: request.capability, message: response.ok ? "Webhook executed." : "Webhook failed.", result: payload };
+    const payload = await response.json().catch(() => null);
+    const executed = response.ok && payload !== null && payload?.ok !== false && !payload?.error;
+    return { status: executed ? "executed" : "failed", provider: this.name, capability: request.capability, message: executed ? "Webhook returned a successful response." : "Webhook returned an error or unreadable response.", result: payload };
   }
 }
 
@@ -118,8 +120,9 @@ export class McpProvider implements ToolProvider {
   async execute(request: ToolRequest): Promise<ToolResult> {
     if (!this.isConfigured()) return { status: "missing_connector", provider: this.name, capability: request.capability, message: "MCP server is not configured." };
     const response = await fetch(process.env.MCP_SERVER_URL!, { method: "POST", headers: { "content-type": "application/json", ...(process.env.MCP_AUTH_TOKEN ? { authorization: `Bearer ${process.env.MCP_AUTH_TOKEN}` } : {}) }, body: JSON.stringify({ jsonrpc: "2.0", id: Date.now(), method: "tools/call", params: request }) });
-    const payload = await response.json().catch(() => ({}));
-    return { status: response.ok ? "executed" : "failed", provider: this.name, capability: request.capability, message: response.ok ? "MCP call executed." : "MCP call failed.", result: payload };
+    const payload = await response.json().catch(() => null);
+    const executed = response.ok && payload?.jsonrpc === "2.0" && !payload?.error && payload?.result && payload.result.isError !== true;
+    return { status: executed ? "executed" : "failed", provider: this.name, capability: request.capability, message: executed ? "MCP returned a successful tool result." : "MCP did not return a successful tool result.", result: payload };
   }
 }
 

@@ -7,7 +7,7 @@ This doc describes the **target** wiring between the cockpit and the kernel. Emp
 ## Prerequisites
 
 1. [n8n](https://github.com/saifsoub/n8n) stack running
-2. [S-OS](https://github.com/saifsoub/S-OS) workflows imported and `tests/curl-tests.sh` passing
+2. [S-OS](https://github.com/saifsoub/S-OS) workflows imported and their configured endpoints verified through permitted source and operational evidence, without running test suites
 3. Operator key generated (`S_AGENTOS_OPERATOR_KEY`)
 
 ---
