@@ -13,7 +13,7 @@ import {
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 type ExecutionMode = 'demo' | 'dry-run' | 'live';
-type RunStatus = 'idle' | 'running' | 'awaiting-approval' | 'completed' | 'rejected';
+type RunStatus = 'idle' | 'running' | 'awaiting-approval' | 'completed' | 'rejected' | 'blocked' | 'previewed';
 type RoomId = 'command' | 'revenue' | 'approval';
 type EventStatus = 'running' | 'completed' | 'rejected' | 'pending' | 'awaiting';
 
@@ -170,73 +170,59 @@ export function CityMap() {
     addEvent('Run initiated — objective received', 'running', 'command');
     setThought('Reading objective...');
 
-    await delay(900);
-    setThought('Decomposing into subtasks...');
-    addEvent('Objective parsed → 3 subtasks identified', 'completed', 'command');
-
-    await delay(1100);
-    setActiveRoom('revenue');
-    setThought('Building execution payload...');
-    addEvent('Moving to Revenue Room → building payload', 'running', 'revenue');
-
-    if (mode === 'dry-run' || mode === 'live') {
+    if (mode === 'live') {
+      setActiveRoom('revenue');
+      setThought('Requesting execution...');
       try {
         const res = await fetch('/api/agents/run', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ agentId: 'general-operator', inputs: { objective: objective.trim(), mode } }),
         });
-        const data = await res.json() as Record<string, unknown>;
+        const data = await res.json();
         setApiResult(data);
-        addEvent(
-          (data.ok as boolean) ? 'Agent run API → response received' : 'Agent run API → error (non-blocking)',
-          (data.ok as boolean) ? 'completed' : 'rejected',
-          'revenue',
-          (data.ok as boolean) ? JSON.stringify(data).slice(0, 100) + '…' : String(data.error),
-        );
-      } catch {
-        addEvent('Agent run API → network error (non-blocking)', 'rejected', 'revenue');
+        if (!res.ok || data.ok !== true) throw new Error(data.error || 'Execution request failed.');
+        const results = Array.isArray(data.executions) ? data.executions : [];
+        const unresolved = results.filter((result: { status: string }) => result.status !== 'executed');
+        const objectiveExecuted = results.some((result: { capability: string; status: string }) => result.capability === 'agent.execute' && result.status === 'executed');
+        if (!objectiveExecuted || results.length === 0 || unresolved.length > 0) {
+          addEvent('Objective remains incomplete', 'rejected', 'revenue',
+            unresolved.map((result: { message?: string }) => result.message || 'Action not executed.').join(' ') || 'No objective execution receipt returned.');
+          setThought('Execution is incomplete. Review the returned actions and required approvals.');
+          setStatus('blocked');
+        } else {
+          addEvent('Execution results returned', 'completed', 'revenue', 'Review the stored run receipts for the requested outcome.');
+          setThought('Execution results returned.');
+          setStatus('completed');
+        }
+      } catch (error) {
+        addEvent('Execution request failed', 'rejected', 'revenue', error instanceof Error ? error.message : 'Unknown execution error.');
+        setThought('Execution failed. No completion is recorded.');
+        setStatus('blocked');
       }
-    } else {
-      await delay(400);
-      addEvent('Demo payload prepared (no external call)', 'completed', 'revenue');
+      setActiveRoom(null);
+      return;
     }
 
+    setActiveRoom('revenue');
+    setThought('Preparing a local preview. No actions will be executed.');
+    addEvent('Preview prepared — no execution request sent', 'completed', 'revenue');
+
     await delay(900);
-    setThought('Action requires authorization...');
-    addEvent('Consequential action detected → routing to Approval Desk', 'awaiting', 'approval');
+    setThought('Preparing preview for review...');
+    addEvent('Preview ready for review', 'awaiting', 'approval');
     setActiveRoom('approval');
 
     const actionPayload = {
       objective: objective.trim(), mode,
       subtasks: ['Analyze data', 'Prepare output', 'Deliver to stakeholders'],
       estimatedImpact: 'medium',
-      reversible: mode !== 'live',
-      requiresExternalCommit: mode === 'live',
+      reversible: true,
+      requiresExternalCommit: false,
       timestamp: new Date().toISOString(),
     };
-    const actionType = mode === 'live' ? 'LIVE_ACTION' : mode === 'dry-run' ? 'DRY_RUN_PREVIEW' : 'DEMO_ACTION';
+    const actionType = mode === 'dry-run' ? 'DRY_RUN_PREVIEW' : 'DEMO_ACTION';
 
-    let actionId = uid();
-    if (mode === 'live') {
-      try {
-        const preRes = await fetch('/api/approvals', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ source: 'governor-office', action: actionType, payload: actionPayload, riskLevel: 'HIGH' }),
-        });
-        if (preRes.ok) {
-          const preData = await preRes.json() as { ok: boolean; approval?: { id: string } };
-          if (preData.ok && preData.approval?.id) {
-            actionId = preData.approval.id;
-            addEvent('Approval record created in store', 'completed', 'approval');
-          }
-        }
-      } catch {
-        addEvent('Approval pre-register failed (non-blocking)', 'rejected', 'approval');
-      }
-    }
-
+    const actionId = uid();
     const action: PendingAction = {
       id: actionId,
       type: actionType,
@@ -246,45 +232,22 @@ export function CityMap() {
     setPending(action);
     setEditPayload(JSON.stringify(action.payload, null, 2));
     setStatus('awaiting-approval');
-    setThought('Waiting for operator authorization.');
+    setThought('Review the preview. No live action will be executed.');
   }, [objective, isLive, mode, reset, addEvent]);
 
   const handleApprove = useCallback(async () => {
     if (!pending) return;
-    addEvent('Action approved by operator', 'completed', 'approval', pending.summary);
-    if (mode === 'live') {
-      try {
-        const res = await fetch(`/api/approvals/${pending.id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'approved', payload: pending.payload }),
-        });
-        if (!res.ok) throw new Error('Failed to log approval');
-        addEvent('Approval logged → /api/approvals', 'completed', 'approval');
-      } catch {
-        addEvent('Approval store write failed (non-blocking)', 'rejected', 'approval');
-      }
-    }
-    await delay(500);
-    addEvent('Run completed', 'completed', 'revenue');
-    setThought('Execution complete. Awaiting next objective.');
-    setStatus('completed'); setActiveRoom(null); setPending(null);
-  }, [pending, mode, addEvent]);
+    addEvent('Preview reviewed by operator', 'completed', 'approval', pending.summary);
+    setThought('Preview reviewed. No live action was executed.');
+    setStatus('previewed'); setActiveRoom(null); setPending(null);
+  }, [pending, addEvent]);
 
   const handleReject = useCallback(async () => {
     if (!pending) return;
-    addEvent('Action rejected by operator', 'rejected', 'approval', pending.summary);
-    if (mode === 'live') {
-      try {
-        await fetch(`/api/approvals/${pending.id}`, {
-          method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'rejected' }),
-        });
-      } catch { /* non-blocking */ }
-    }
-    setThought('Action rejected. Ready for new objective.');
+    addEvent('Preview dismissed by operator', 'rejected', 'approval', pending.summary);
+    setThought('Preview dismissed. No live action was executed.');
     setStatus('rejected'); setActiveRoom(null); setPending(null);
-  }, [pending, mode, addEvent]);
+  }, [pending, addEvent]);
 
   const handleEditSave = useCallback(() => {
     if (!pending) return;
@@ -303,8 +266,10 @@ export function CityMap() {
   // ── Status bar config ──────────────────────────────────────────────────────
   const statusCfg: Record<Exclude<RunStatus, 'idle'>, { bg: string; border: string; color: string; text: string; Icon: React.ComponentType<{size?:number}> }> = {
     running:            { bg: 'rgba(56,189,248,0.07)',  border: 'rgba(56,189,248,0.22)',  color: '#38bdf8', text: 'Agent running…',                                  Icon: Zap },
-    'awaiting-approval':{ bg: 'rgba(251,191,36,0.07)',  border: 'rgba(251,191,36,0.22)',  color: '#fbbf24', text: 'Awaiting operator approval at Approval Desk',      Icon: AlertTriangle },
-    completed:          { bg: 'rgba(52,211,153,0.07)',  border: 'rgba(52,211,153,0.22)',  color: '#34d399', text: 'Run completed successfully',                       Icon: CheckCircle },
+    'awaiting-approval':{ bg: 'rgba(251,191,36,0.07)',  border: 'rgba(251,191,36,0.22)',  color: '#fbbf24', text: 'Preview ready for review — no live action',      Icon: AlertTriangle },
+    blocked: { bg: 'rgba(248,113,113,0.07)', border: 'rgba(248,113,113,0.22)', color: '#f87171', text: 'Execution incomplete — review the results', Icon: AlertTriangle },
+    previewed: { bg: 'rgba(56,189,248,0.07)', border: 'rgba(56,189,248,0.22)', color: '#38bdf8', text: 'Preview reviewed — no live action executed', Icon: Eye },
+    completed:          { bg: 'rgba(52,211,153,0.07)',  border: 'rgba(52,211,153,0.22)',  color: '#34d399', text: 'Execution results returned',                       Icon: CheckCircle },
     rejected:           { bg: 'rgba(248,113,113,0.07)', border: 'rgba(248,113,113,0.22)', color: '#f87171', text: 'Action rejected — logged to timeline',             Icon: XCircle },
   };
 
@@ -598,7 +563,7 @@ export function CityMap() {
                   {status === 'running' ? 'Running…' : 'Run Objective'}
                 </button>
 
-                {(status === 'completed' || status === 'rejected') && (
+                {(['completed', 'rejected', 'blocked', 'previewed'].includes(status)) && (
                   <button onClick={reset} style={{
                     display: 'flex', alignItems: 'center', gap: 6,
                     borderRadius: 12, padding: '9px 16px', fontSize: 13, fontWeight: 500,
@@ -773,7 +738,7 @@ export function CityMap() {
                       background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.38)', color: '#34d399',
                       cursor: 'pointer',
                     }}>
-                      <CheckCircle size={13} /> Approve
+                      <CheckCircle size={13} /> Review preview
                     </button>
                     <button onClick={handleReject} style={{
                       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -781,7 +746,7 @@ export function CityMap() {
                       background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.32)', color: '#f87171',
                       cursor: 'pointer',
                     }}>
-                      <XCircle size={13} /> Reject
+                      <XCircle size={13} /> Dismiss preview
                     </button>
                   </div>
                 </div>

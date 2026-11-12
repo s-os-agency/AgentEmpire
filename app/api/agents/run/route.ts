@@ -7,6 +7,10 @@ export async function POST(request: Request) {
     const agentId = body.agentId || "content-strategist";
     const inputs = body.inputs || {};
 
+    if (inputs.mode === "demo" || inputs.mode === "dry-run") {
+      return NextResponse.json({ ok: true, mode: inputs.mode, executed: false, executions: [],
+        message: "Preview only. No actions were executed." });
+    }
     const result = await routeAgentExecution(agentId, inputs);
 
     return NextResponse.json({
